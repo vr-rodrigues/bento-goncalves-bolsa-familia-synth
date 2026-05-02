@@ -1,0 +1,18 @@
+*.gitattributes text eol=lf
+*.gitignore text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.tex text eol=lf
+*.bib text eol=lf
+*.sql text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.csv text eol=lf
+
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.xlsx binary
+*.dta binary
+*.rar binary

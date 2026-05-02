@@ -1,0 +1,129 @@
+\documentclass[10pt,twocolumn]{article}
+
+\usepackage[letterpaper,margin=0.56in]{geometry}
+\usepackage{amsmath,amssymb,graphicx,booktabs,threeparttable,natbib,float,subcaption,placeins}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{caption}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black}
+\bibliographystyle{plainnat}
+\setcitestyle{authoryear,round}
+\captionsetup{font=scriptsize,labelfont=bf}
+\captionsetup[subfigure]{font=scriptsize,skip=1pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{5pt plus 1pt minus 1pt}
+\setlength{\dblfloatsep}{4pt plus 1pt minus 1pt}
+\setlength{\dbltextfloatsep}{5pt plus 1pt minus 1pt}
+\setcounter{topnumber}{4}
+\setcounter{dbltopnumber}{4}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\textfraction}{0.03}
+\renewcommand{\floatpagefraction}{0.85}
+\renewcommand{\dblfloatpagefraction}{0.85}
+\setlength{\parskip}{1pt}
+\setlength{\parindent}{10pt}
+\raggedbottom
+\renewcommand{\abstractname}{Resumo}
+\renewcommand{\refname}{Referências}
+\renewcommand{\tablename}{Tabela}
+\renewcommand{\figurename}{Figura}
+\newcommand{\tabnotes}[1]{\par\vspace{2pt}\noindent\begin{minipage}{\linewidth}\footnotesize #1\end{minipage}}
+\title{\vspace{-1.35cm}\textbf{Nota de Política Pública: saídas do Bolsa Família e emprego formal no município de Bento Gonçalves}}
+\author{Victor Rangel\textsuperscript{*}\\[-1pt]{\normalsize Insper}}
+\date{}
+
+\begin{document}
+\twocolumn[
+\maketitle
+\vspace{-0.55cm}
+\begin{abstract}
+\noindent Esta nota avalia se a queda no número de famílias do Bolsa Família no município de Bento Gonçalves é compatível com a política municipal, e não apenas com uma tendência regional. Comparo o município com uma combinação sintética de municípios parecidos da região Sul. O contrafactual indica redução adicional relevante: em março de 2026, havia 292 famílias a menos no programa em relação ao município sintético. Também aparece um sinal positivo no estoque formal de empregos. Como os dados são agregados, o exercício não mostra que as mesmas famílias foram contratadas; mas indica um padrão agregado causal que merece investigação com dados desagregados.
+\end{abstract}
+\vspace{0.05cm}
+\noindent{\footnotesize \textbf{Palavras-chave:} Bolsa Família; controle sintético; política municipal; emprego formal. \textbf{JEL:} I38; J68; C23; H53.}
+\vspace{0.35cm}
+]
+\begingroup
+\renewcommand{\thefootnote}{*}
+\footnotetext{E-mail: \href{mailto:victorrsr@al.insper.edu.br}{victorrsr@al.insper.edu.br}.}
+\endgroup
+
+\section{Introdução}
+
+Governos locais podem afetar o número de beneficiários de programas sociais por revisão cadastral, busca ativa e intermediação no mercado de trabalho. Se a política do município de Bento Gonçalves realmente aproximou famílias em idade produtiva de vagas formais, a expectativa substantiva não seria apenas reduzir o Bolsa Família, mas também aumentar a inserção produtiva local. Essa expectativa é consistente com a literatura sobre políticas ativas de mercado de trabalho: programas de assistência à busca, intermediação, treinamento e apoio ao emprego podem elevar resultados laborais, embora os efeitos dependam do desenho, do horizonte e do grupo atendido \citep{card2018what}.
+
+A literatura de transferências condicionadas também sugere que o canal relevante não é mecânico. Programas como o Bolsa Família combinam alívio de pobreza no curto prazo com incentivos a capital humano no longo prazo. No Brasil, há evidência de efeitos positivos sobre escolaridade \citep{glewwe2012bolsa,debrauw2015schooling} e de mobilidade posterior via saída de programas sociais e acesso ao emprego formal \citep{fassarella2024mobility}. Em outro contexto latino-americano, evidência de longo prazo no \textit{Economic Journal} mostra que transferências condicionadas podem afetar escolaridade, mobilidade geográfica e resultados econômicos da geração seguinte \citep{parker2023cct}.
+
+Ao mesmo tempo, a evidência tampouco sustenta uma narrativa simples de que transferências desincentivam o trabalho. Estudos sobre o Bolsa Família encontram efeitos nulos ou heterogêneos sobre oferta de trabalho e informalidade \citep{debrauw2015labor,barbosa2014informality}, enquanto a evidência experimental internacional não encontra redução sistemática de emprego em programas de transferência \citep{banerjee2017lazy}. Para beneficiários brasileiros de baixa renda, também há evidência de maior duração no emprego formal \citep{santos2017duration} e, mais recentemente, de que uma expansão de transferência pode aumentar emprego e melhorar saúde quando relaxa restrições relevantes \citep{best2026productive}.
+
+Essa literatura torna natural olhar simultaneamente para saídas do Bolsa Família e estoque formal de vínculos. O estoque de vínculos não identifica diretamente se as famílias que saíram do programa foram as mesmas que obtiveram emprego formal, mas é um desfecho agregado adequado para investigar se a queda administrativa veio acompanhada de melhora no mercado de trabalho local. Ainda assim, saídas do programa podem refletir revisões cadastrais, choques regionais ou dinâmicas comuns a municípios semelhantes. Por isso, estimo um contrafactual sintético para o município de Bento Gonçalves e comparo a trajetória observada com um contrafactual construído a partir de municípios não tratados.
+
+\section{Estratégia empírica}
+
+O efeito mensal é $\alpha_{1t}=Y_{1t}-Y^N_{1t}$, em que $Y^N_{1t}$ é aproximado por uma combinação convexa de municípios não tratados, $\widehat{Y}^N_{1t}=\sum_jw_jY_{jt}$, com $w_j\geq0$ e $\sum_jw_j=1$. Os pesos minimizam a distância pré-tratamento usando apenas informação anterior à intervenção.
+
+Para melhorar o ajuste, aplico duas camadas de seleção. Primeiro, restrinjo os candidatos a municípios completos e comparáveis no pool geográfico. Segundo, entre os candidatos mais próximos, escolho o subconjunto de 12 a 25 doadores que minimiza o RMSPE pré-tratamento do município de Bento Gonçalves. Bolsa Família usa todos os lags mensais disponíveis desde março de 2023; estoque formal usa todos os lags desde fevereiro de 2023, mais log população/log PIB municipal. Nenhum resultado pós-tratamento participa da escolha.
+
+O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{tab:results} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores placebo excluem unidades com MSPE pré superior a cinco vezes o MSPE pré do município de Bento Gonçalves; as bandas reportam conjuntos de confiança de 90\% de \citet{firpo2018synthetic}. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
+
+\begin{table*}[t]
+\centering
+\caption{Estimativas de controle sintético para Bolsa Família e emprego formal}
+\label{tab:results}
+\input{tables/tab_results.tex}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\makebox[\textwidth][c]{%
+\begin{minipage}{0.995\textwidth}
+\centering
+\subcaptionbox{Bolsa Família: Observado e sintético}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_01_bolsa_familia_series.pdf}}\hspace{0.006\textwidth}%
+\subcaptionbox{Estoque formal: Observado e sintético}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_02_emprego_estoque_series.pdf}}
+
+\vspace{2pt}
+\subcaptionbox{Bolsa Família: Gap e IC 90\%}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_01_bolsa_familia_ci.pdf}}\hspace{0.006\textwidth}%
+\subcaptionbox{Estoque formal: Gap e IC 90\%}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_02_emprego_estoque_ci.pdf}}
+
+\vspace{2pt}
+\subcaptionbox{Bolsa Família: Placebos}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_01_bolsa_familia_placebo.pdf}}\hspace{0.006\textwidth}%
+\subcaptionbox{Estoque formal: Placebos}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_02_emprego_estoque_placebo.pdf}}
+\end{minipage}%
+}
+\caption{Controle sintético -- pool Sul. Painéis à esquerda reportam famílias beneficiárias; painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. Efeito no último mês: Bolsa Família: -292 ($p=0.077$); Estoque formal: 496 ($p=0.056$).}
+\label{fig:main-att}
+
+\par\vspace{1pt}
+\begin{minipage}{0.96\textwidth}
+\footnotesize\emph{Composição do pool sintético, principais pesos: Bolsa Família (12 com peso positivo): Esperança do Sul/RS 9.0\%, Cruz Alta/RS 8.5\%, Santa Vitória do Palmar/RS 8.5\%; Estoque formal (20 com peso positivo): Sant'Ana do Livramento/RS 5.0\%, Santa Maria/RS 5.0\%, Ijuí/RS 5.0\%.}
+\end{minipage}
+
+\end{figure*}
+
+
+\FloatBarrier
+\vspace{5pt}
+\section{Resultados}
+
+A Figura~\ref{fig:main-att} reporta a trajetória observada e sintética, o gap com IC de 90\% e os placebos para os dois desfechos centrais. Dois resultados se destacam. O primeiro é a queda do Bolsa Família (-292; $p=0.077$), que permanece negativa e economicamente relevante. O segundo é o aumento do estoque formal de 496 vínculos ($p=0.056$), compatível com a hipótese de que parte da saída do programa pode ter coincidido com maior inserção no mercado formal local.
+
+Em magnitude, a queda no Bolsa Família é grande em relação ao contrafactual: no último mês, equivale a 18\% do município sintético. O efeito no estoque formal é menor em termos proporcionais, cerca de 1\%, mas relevante em unidades absolutas: 496 vínculos adicionais, ou 1,7 vínculo formal para cada família a menos no programa. Na média pós-tratamento, a razão é próxima de 2,1 vínculos por família. Assim, os efeitos parecem da mesma ordem administrativa, embora a série agregada não permita concluir que as famílias que saíram foram exatamente as contratadas.
+
+A seleção mais enxuta de doadores melhora o ajuste visual no pré-tratamento e reduz a dependência de um pool grande demais para uma aplicação municipal. Em vez de usar quarenta municípios por padrão, o exercício principal retém os doadores com melhor desempenho pré-tratamento dentro do pool regional: 12 para Bolsa Família e 20 para estoque formal. Essa escolha torna a comparação mais próxima do município de Bento Gonçalves sem abandonar a lógica de controle sintético.
+
+Do ponto de vista substantivo, os resultados sugerem uma leitura intermediária. A trajetória do município de Bento Gonçalves se afasta do contrafactual regional, o que reduz a plausibilidade de uma narrativa puramente descritiva de queda mecânica no Bolsa Família. Ao mesmo tempo, o mecanismo causal permanece em aberto: o aumento de estoque formal é consistente com inclusão produtiva, mas dados individuais são necessários para verificar se as famílias que saíram do programa foram exatamente aquelas absorvidas pelo mercado formal.
+
+\section{Considerações finais}
+
+Esta nota mostra que uma política municipal pode ser avaliada com um contrafactual transparente e replicável. Depois de novembro de 2024, o município de Bento Gonçalves passa a registrar menos famílias no Bolsa Família e mais vínculos formais do que seria esperado a partir de municípios semelhantes da região Sul. O exercício não transforma uma série agregada em prova individual, mas disciplina a comparação e reduz o risco de confundir a política local com movimentos regionais comuns. A leitura mais prudente é que há evidência consistente de queda adicional no Bolsa Família e sinal compatível de melhora no mercado formal local, não uma prova final sobre quem saiu do programa.
+
+Para a gestão pública, esse é justamente o ponto: políticas que afetam renda, trabalho e acesso a direitos devem ser desenhadas, monitoradas e corrigidas com evidência. A próxima etapa natural é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda para verificar se as famílias que saíram do programa foram as mesmas absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se esse mecanismo for confirmado, a experiência passa a oferecer uma hipótese concreta de política municipal a ser copiada e adaptada. Mesmo antes desse passo, a análise mostra que bons programas públicos devem ser avaliados com hipóteses explícitas, contrafactuais claros e comunicação honesta da incerteza.
+
+\newpage
+\setlength{\bibsep}{0pt plus 0.1ex}
+\bibliography{references}
+
+\end{document}

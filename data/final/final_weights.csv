@@ -1,0 +1,65 @@
+outcome,outcome_label,outcome_unit,pool,pool_label,id_municipio_6,municipio,sigla_uf,weight
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,430745,Esperança do Sul,RS,0.090509727856497
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,430673,Doutor Maurício Cardoso,RS,0.0856158071354017
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,431730,Santa Vitória do Palmar,RS,0.0839097373768535
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,430610,Cruz Alta,RS,0.0838437004926864
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,430064,Ametista do Sul,RS,0.0832873848632516
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,431642,Sagrada Família,RS,0.0829548120470596
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,430642,Dois Irmãos das Missões,RS,0.0823618354835695
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,431880,São Lourenço do Sul,RS,0.0822990556424622
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,431370,Palmeira das Missões,RS,0.0821426366638373
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,432190,Três Passos,RS,0.0814012625961606
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,431245,Morro Redondo,RS,0.0809583348894261
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,rs,Rio Grande do Sul,430535,Charqueadas,RS,0.080715704952794
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",430745,Esperança do Sul,RS,0.0900486872966105
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",430610,Cruz Alta,RS,0.084758939613416
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",431730,Santa Vitória do Palmar,RS,0.0846379273966569
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",430190,Barra do Ribeiro,RS,0.0844976801770479
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",430064,Ametista do Sul,RS,0.0840327268439838
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",431642,Sagrada Família,RS,0.0828600818214663
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",431370,Palmeira das Missões,RS,0.0827326687820081
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",431880,São Lourenço do Sul,RS,0.0825107507984962
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",431245,Morro Redondo,RS,0.0811536784033261
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",432190,Três Passos,RS,0.0810892162309064
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",432120,Taquara,RS,0.0808474088700521
+bolsa_familia,Familias beneficiarias do Bolsa Familia,familias,south,"Regiao Sul (RS, SC e PR)",430535,Charqueadas,RS,0.0808302337660291
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,430820,Flores da Cunha,RS,0.0509049011110654
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,432190,Três Passos,RS,0.0503572363097343
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431480,Portão,RS,0.0501985118268012
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431710,Sant'Ana do Livramento,RS,0.0501143478129166
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,432180,Três de Maio,RS,0.0500745168472945
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431340,Novo Hamburgo,RS,0.0500124687355733
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431440,Pelotas,RS,0.0500057275978173
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431370,Palmeira das Missões,RS,0.0499869330204457
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431950,São Sebastião do Caí,RS,0.0499535334641039
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431960,São Sepé,RS,0.0499461740027703
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,430450,Canguçu,RS,0.0499440128128509
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431690,Santa Maria,RS,0.0499233335001472
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,430350,Camaquã,RS,0.0499050014873829
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,430460,Canoas,RS,0.0499029071917527
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,430610,Cruz Alta,RS,0.0498808770684591
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431330,Nova Prata,RS,0.0498658718882167
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431130,Lagoa Vermelha,RS,0.0498586247235086
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431880,São Lourenço do Sul,RS,0.0498104370953838
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,431020,Ijuí,RS,0.0497946226091267
+emprego_estoque,Estoque de vinculos formais,vinculos,rs,Rio Grande do Sul,430470,Carazinho,RS,0.049559960894648
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",431710,Sant'Ana do Livramento,RS,0.0504673080885023
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",431690,Santa Maria,RS,0.0501901777834437
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",431020,Ijuí,RS,0.0501494631749495
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",410550,Cianorte,PR,0.0501360311817405
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",430350,Camaquã,RS,0.0501178836984864
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",410140,Apucarana,PR,0.050105097237634
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420300,Caçador,SC,0.0500868324921464
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",430610,Cruz Alta,RS,0.0500197270380459
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",410370,Cambé,PR,0.0499988170937849
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",431340,Novo Hamburgo,RS,0.0499939700660378
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420930,Lages,SC,0.0499829721271782
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",411460,Marechal Cândido Rondon,PR,0.0499297361452221
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",421870,Tubarão,SC,0.0499231963708581
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",431440,Pelotas,RS,0.049914621002035
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420890,Jaraguá do Sul,SC,0.049848677694192
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420650,Guaramirim,SC,0.0498441719892137
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",410940,Guarapuava,PR,0.0498341221346131
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420460,Criciúma,SC,0.049829500274318
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420430,Concórdia,SC,0.0498246948342894
+emprego_estoque,Estoque de vinculos formais,vinculos,south,"Regiao Sul (RS, SC e PR)",420280,Braço do Norte,SC,0.0498029995733082

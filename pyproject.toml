@@ -1,0 +1,18 @@
+[project]
+name = "bg-bolsa-synth"
+version = "0.1.0"
+description = "Synthetic control study for Bento Goncalves Bolsa Familia policy"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.0",
+  "google-cloud-bigquery>=3.0",
+  "pandas-gbq>=0.24",
+  "basedosdados>=2.0",
+  "openpyxl>=3.1",
+  "reportlab>=4.0",
+  "gdown>=6.0"
+]
+
+[tool.ruff]
+line-length = 100

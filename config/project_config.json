@@ -1,0 +1,84 @@
+{
+  "project": {
+    "name": "bento-goncalves-bolsa-familia-synth",
+    "base_dos_dados_project_number": "749237591075",
+    "base_dos_dados_project_id": "upa-research"
+  },
+  "treatment": {
+    "municipality_name": "Bento Goncalves",
+    "state": "RS",
+    "id_municipio_mds": "430210",
+    "id_municipio_ibge": "4302105",
+    "first_pre_month": 202303,
+    "intervention_month": 202411,
+    "last_pre_month": 202410,
+    "post_end_month": 202603
+  },
+  "data": {
+    "mds_years": [2023, 2024, 2025, 2026],
+    "min_pre_months": 18,
+    "caged_latest_month": 202603,
+    "caged_google_drive_file_id": "1VMuxRR4DSETow7ZkE839VLdrISGykbQE"
+  },
+  "matching": {
+    "national_k": 40,
+    "rs_k": 30,
+    "use_all_pre_treatment_y_lags": true
+  },
+  "outcomes": {
+    "bolsa_familia": {
+      "label": "Familias beneficiarias do Bolsa Familia",
+      "value_col": "familias_bf",
+      "panel": "bolsa"
+    },
+    "emprego_estoque": {
+      "label": "Vinculos formais ativos (estoque CAGED)",
+      "value_col": "estoque",
+      "panel": "caged",
+      "scale_mode": "index"
+    },
+    "emprego_admissoes": {
+      "label": "Admissoes formais mensais",
+      "value_col": "admissoes",
+      "panel": "caged",
+      "scale_mode": "index"
+    },
+    "emprego_desligamentos": {
+      "label": "Desligamentos formais mensais",
+      "value_col": "desligamentos",
+      "panel": "caged",
+      "scale_mode": "index"
+    },
+    "emprego_saldo": {
+      "label": "Saldo liquido mensal de empregos formais",
+      "value_col": "saldo",
+      "panel": "caged",
+      "scale_mode": "level"
+    },
+    "taxa_admissao": {
+      "label": "Taxa mensal de admissao formal por estoque anterior",
+      "value_col": "taxa_admissao",
+      "panel": "caged",
+      "scale_mode": "index"
+    },
+    "taxa_desligamento": {
+      "label": "Taxa mensal de desligamento formal por estoque anterior",
+      "value_col": "taxa_desligamento",
+      "panel": "caged",
+      "scale_mode": "index"
+    },
+    "taxa_rotatividade": {
+      "label": "Taxa mensal de rotatividade formal",
+      "value_col": "taxa_rotatividade",
+      "panel": "caged",
+      "scale_mode": "index"
+    },
+    "empresas_abertas": {
+      "label": "Empresas abertas por mes (CNPJ)",
+      "value_col": "empresas_abertas",
+      "panel": "cnpj",
+      "scale_mode": "level",
+      "post_end_month": 202509
+    }
+  }
+}

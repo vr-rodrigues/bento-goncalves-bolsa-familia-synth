@@ -1,0 +1,42 @@
+.venv/
+.deps/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Third-party papers/supplements used only as local references.
+1-s2.0-S0165176522002294-main.pdf
+EBSCO-FullText-04_30_2026.pdf
+scripts/suppl_jci-2016-0026supp.rar
+scripts/suppl_jci-2016-0026supp/
+
+# Raw and large intermediate data.
+data/raw/*.csv
+data/raw/*.json
+data/raw/*.xlsx
+data/raw/gdrive_*/
+data/processed/*.csv
+reports/
+outputs/tables/*.csv
+outputs/figures/*.svg
+outputs/economics_letters/*.csv
+
+# Earlier exploratory LaTeX project; final note is in paper/economics_letters_project.
+paper/overleaf_project/
+paper/overleaf_project/*.aux
+paper/overleaf_project/*.bbl
+paper/overleaf_project/*.blg
+paper/overleaf_project/*.fdb_latexmk
+paper/overleaf_project/*.fls
+paper/overleaf_project/*.log
+paper/overleaf_project/*.out
+paper/economics_letters_project/*.aux
+paper/economics_letters_project/*.bbl
+paper/economics_letters_project/*.blg
+paper/economics_letters_project/*.fdb_latexmk
+paper/economics_letters_project/*.fls
+paper/economics_letters_project/*.log
+paper/economics_letters_project/*.out
+paper/economics_letters_project/missfont.log
+paper/economics_letters_project/preview/
+paper/economics_letters_project/preview_check*/

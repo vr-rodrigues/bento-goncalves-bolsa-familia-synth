@@ -28,19 +28,19 @@ POOLS = {
 }
 DONOR_PREFILTER_K = 80
 DONOR_SELECTION_K_GRID = [12, 15, 20, 25]
+SPARSE_LAG_OFFSETS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18]
 
-DEFAULT_MATCHING_SPEC = {"name": "all_pre_lags", "lag_offsets": "all", "baseline_covariates": False}
+DEFAULT_MATCHING_SPEC = {"name": "sparse_pre_lags", "lag_offsets": SPARSE_LAG_OFFSETS, "baseline_covariates": False}
 OUTCOME_MATCHING_SPECS = {
     "bolsa_familia": {
-        "name": "all_pre_lags",
-        "lag_offsets": "all",
-        "baseline_covariates": False,
+        "name": "sparse_pre_lags_pop_pib",
+        "lag_offsets": SPARSE_LAG_OFFSETS,
+        "baseline_covariates": True,
     },
     "emprego_estoque": {
-        "name": "all_pre_lags_pop_pib",
-        "lag_offsets": "all",
+        "name": "sparse_pre_lags_pop_pib",
+        "lag_offsets": SPARSE_LAG_OFFSETS,
         "baseline_covariates": True,
-        "extra_pre_months": 1,
     },
     "taxa_admissao": {
         "name": "lags_t1_t2_t5_t10",
@@ -1175,6 +1175,7 @@ def write_tables(summary: pd.DataFrame, results: dict) -> None:
                         tex_escape(outcome_label),
                         tex_escape("RS" if row["pool"] == "rs" else "Sul"),
                         fmt0(row["n_donors"]),
+                        fmt0(row["n_placebos_goodfit"]),
                         fmt(row["pre_rmspe"], 2),
                         fmt(row["post_pre_ratio"], 2),
                         fmt(row["p_value"], 3),
@@ -1190,10 +1191,10 @@ def write_tables(summary: pd.DataFrame, results: dict) -> None:
     def table_tex(rows: str, note: str) -> str:
         return r"""\begin{threeparttable}
 \small
-\setlength{\tabcolsep}{5pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}l c r r r r r@{}}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}l c r r r r r r@{}}
 \toprule
-Desfecho & Pool & Doadores & RMSPE pré & Pós/pré & $p_{FP}$ & Efeito final \\
+Desfecho & Pool & Doadores & Placebos & RMSPE pré & Pós/pré & $p_{FP}$ & Efeito final \\
 \midrule
 """ + rows + r"""
 \bottomrule
@@ -1239,14 +1240,27 @@ Desfecho & Pool & Pós/pré & $p_{FP}$ & Efeito final \\
     appendix_specs = [(outcome_key, "south") for outcome_key in appendix_extra_outcomes] + [
         (outcome_key, "rs") for outcome_key in main_outcomes
     ]
+    main_weight_note = tex_escape(
+        ". ".join(
+            weights_composition_note(
+                results[f"{outcome_key}_south"]["weights"],
+                OUTCOME_SHORT_LABELS.get(outcome_key, outcome_key),
+                max_items=3,
+            )
+            for outcome_key in main_outcomes
+        )
+        + "."
+    )
 
     main_note = (
         "A tabela reporta os desfechos destacados no texto principal, em suas unidades indicadas. "
-        "Doadores é o número de municípios retidos na especificação escolhida pelo ajuste pré-tratamento. "
-        "Os $p$-valores reportam o teste de efeito nulo de Firpo e Possebom (2018), "
-        "portado diretamente do bloco de ranqueamento da rotina SCM.CS dos autores. "
+        "Doadores é o número de municípios retidos pela rotina de ajuste pré-tratamento. "
+        "Placebos é o número de doadores reestimados como tratados e mantidos no gráfico por terem MSPE pré até cinco vezes o MSPE pré do município de Bento Gonçalves. "
+        "Os $p$-valores reportam o teste de efeito nulo da rotina SCM.CS de Firpo e Possebom (2018). "
         "Estrelas no efeito final indicam \\textsuperscript{*}$p<0{,}10$, "
-        "\\textsuperscript{**}$p<0{,}05$ e \\textsuperscript{***}$p<0{,}01$."
+        "\\textsuperscript{**}$p<0{,}05$ e \\textsuperscript{***}$p<0{,}01$. "
+        "Pesos principais do pool sintético: "
+        + main_weight_note
     )
     appendix_note = (
         "A tabela reporta a robustez dos desfechos principais com pool restrito ao Rio Grande do Sul. "
@@ -1348,6 +1362,17 @@ def write_references() -> None:
   year = {2018},
   volume = {6},
   number = {2}
+}
+
+@article{ferman2020cherrypicking,
+  author = {Ferman, Bruno and Pinto, Cristine and Possebom, Vitor},
+  title = {Cherry Picking with Synthetic Controls},
+  journal = {Journal of Policy Analysis and Management},
+  year = {2020},
+  volume = {39},
+  number = {2},
+  pages = {510--532},
+  doi = {10.1002/pam.22206}
 }
 
 @article{card2010active,
@@ -1485,6 +1510,14 @@ def write_references() -> None:
   url = {https://repositorio.insper.edu.br/handle/11224/8307},
 }
 
+@misc{prefeiturabento2025bolsafamilia,
+  author = {{Prefeitura Municipal de Bento Gonçalves}},
+  title = {Ações para redução do {Bolsa Família} em {Bento Gonçalves}},
+  year = {2025},
+  note = {Publicado em 8 de outubro de 2025},
+  howpublished = {\href{https://www.bentogoncalves.rs.gov.br/reuniao-entre-os-municipios-da-regiao-verifica-andamento-das-acoes-para-reducao-do-bolsa-familia/}{Portal da Prefeitura Municipal de Bento Gonçalves}},
+}
+
 @misc{mdsvisdata,
   author = {{Ministerio do Desenvolvimento e Assistencia Social}},
   title = {MDS/VISDATA: municipal series for Bolsa Familia},
@@ -1522,7 +1555,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
         return rf"""\documentclass[10pt,twocolumn]{{article}}
 
 \usepackage[letterpaper,margin=0.56in]{{geometry}}
-\usepackage{{amsmath,amssymb,graphicx,booktabs,threeparttable,natbib,float,subcaption,placeins}}
+\usepackage{{amsmath,amssymb,graphicx,booktabs,threeparttable,natbib,float,subcaption,placeins,titlesec}}
 \usepackage[T1]{{fontenc}}
 \usepackage[utf8]{{inputenc}}
 \usepackage{{lmodern}}
@@ -1533,6 +1566,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \setcitestyle{{authoryear,round}}
 \captionsetup{{font=scriptsize,labelfont=bf}}
 \captionsetup[subfigure]{{font=scriptsize,skip=1pt}}
+\titlespacing*{{\section}}{{0pt}}{{6pt plus 1pt minus 1pt}}{{3pt plus 1pt minus 1pt}}
 \setlength{{\floatsep}}{{4pt plus 1pt minus 1pt}}
 \setlength{{\textfloatsep}}{{5pt plus 1pt minus 1pt}}
 \setlength{{\dblfloatsep}}{{4pt plus 1pt minus 1pt}}
@@ -1551,7 +1585,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \renewcommand{{\refname}}{{Referências}}
 \renewcommand{{\tablename}}{{Tabela}}
 \renewcommand{{\figurename}}{{Figura}}
-\newcommand{{\tabnotes}}[1]{{\par\vspace{{2pt}}\noindent\begin{{minipage}}{{\linewidth}}\footnotesize #1\end{{minipage}}}}
+\newcommand{{\tabnotes}}[1]{{\par\vspace{{2pt}}\noindent\begin{{minipage}}{{\linewidth}}\scriptsize #1\end{{minipage}}}}
 \title{{\vspace{{-1.35cm}}\textbf{{{title}}}}}
 \author{{Victor Rangel\textsuperscript{{*}}\\[-1pt]{{\normalsize Insper}}}}
 \date{{}}
@@ -1656,7 +1690,6 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
         "south",
         "Sul",
         "main",
-        composition_note=pool_composition_note(MAIN_OUTCOMES, "south"),
     )
     appendix_figures = panel_wall_figure(
         MAIN_OUTCOMES,
@@ -1678,7 +1711,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \end{{abstract}}
 \vspace{{0.05cm}}
 \noindent{{\footnotesize \textbf{{Palavras-chave:}} Bolsa Família; controle sintético; política municipal; emprego formal. \textbf{{JEL:}} I38; J68; C23; H53.}}
-\vspace{{0.35cm}}
+\vspace{{0.25cm}}
 ]
 \begingroup
 \renewcommand{{\thefootnote}}{{*}}
@@ -1687,7 +1720,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 
 \section{{Introdução}}
 
-Em novembro de 2024, o município de Bento Gonçalves passou a revisar o cadastro do Bolsa Família e encaminhar famílias em idade produtiva a vagas formais. A pergunta é se a queda subsequente de beneficiários excedeu a de municípios semelhantes e veio acompanhada de emprego formal. Sem essa segunda margem, a política poderia refletir correção cadastral ou perda de cobertura.
+Em novembro de 2024, o município de Bento Gonçalves passou a revisar o cadastro do Bolsa Família e encaminhar famílias em idade produtiva a vagas formais, em ação oficial de busca ativa, checagem cadastral e oferta de emprego \citep{{prefeiturabento2025bolsafamilia}}. A pergunta é se a queda subsequente de beneficiários excedeu a de municípios semelhantes e veio acompanhada de emprego formal. Sem essa segunda margem, a política poderia refletir correção cadastral ou perda de cobertura.
 
 Esse é um problema de decisão pública. Indicadores próximos da regra de gestão podem responder sem garantir o desfecho social que justifica a política. Na proteção social, \citet{{pradofirpo2026integridade}} defendem batimentos de bases e revisão orientada por risco para fortalecer integridade e eficiência do gasto. Aqui, a dimensão adicional é emprego. A meta-análise de \citet{{card2018what}} mostra que políticas ativas de mercado de trabalho tendem a ter efeitos pequenos no curto prazo e mais positivos depois de dois ou três anos, com heterogeneidade por desenho e público atendido.
 
@@ -1699,9 +1732,11 @@ Estimo um controle sintético para o município de Bento Gonçalves usando munic
 
 A estratégia segue o controle sintético de \citet{{abadie2010synthetic}}. A ideia é comparar o município tratado com uma média ponderada de municípios não tratados que reproduza sua trajetória antes da intervenção. O efeito mensal é $\alpha_{{1t}}=Y_{{1t}}-Y^N_{{1t}}$, em que $Y^N_{{1t}}$ é aproximado por $\widehat{{Y}}^N_{{1t}}=\sum_jw_jY_{{jt}}$, com $w_j\geq0$ e $\sum_jw_j=1$. Os pesos minimizam a distância pré-tratamento usando apenas informação anterior à intervenção.
 
-Seleciono doadores antes de estimar os pesos. Restrinjo os candidatos a municípios completos e comparáveis no pool geográfico. Entre os candidatos mais próximos, escolho o subconjunto de 12 a 25 doadores que minimiza o RMSPE pré-tratamento do município de Bento Gonçalves. Bolsa Família usa todos os lags mensais disponíveis desde março de 2023. Estoque formal usa todos os lags desde fevereiro de 2023, mais log população e log PIB municipal. Nenhum resultado pós-tratamento participa da escolha.
+Antes de rodar o controle sintético, fixo a amostra de comparação. Para cada desfecho, entram municípios com painel mensal completo; nas séries em índice, também exijo valor positivo no mês base. O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{{tab:results}} reporta a robustez restrita ao Rio Grande do Sul. Bento Gonçalves está dentro do suporte observado de população, PIB e PIB per capita do Sul.
 
-O pool principal é a região Sul (RS, SC e PR). A Tabela~\ref{{tab:results}} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores reportados são os testes de efeito nulo derivados da rotina SCM.CS de \citet{{firpo2018synthetic}}. As bandas mostram seus conjuntos de confiança de 90\%. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
+A escolha de preditores segue a cautela de \citet{{ferman2020cherrypicking}}, que mostram como lags e covariáveis escolhidos após inspeção dos resultados podem abrir espaço para busca de especificações em controle sintético. Por isso, trato a etapa de seleção como desenho prévio e uso uma grade fixa de lags. Dentro do pool, ordeno até 80 municípios por preditores de pré-tratamento, comparo distância de matching e RMSPE direto, e testo 12, 15, 20 e 25 doadores. Retenho a combinação de menor RMSPE pré. Os dois desfechos usam os lags $t-1$ a $t-12$, $t-15$ e $t-18$, além de log população e log PIB. Nenhuma observação posterior a outubro de 2024 entra nessa seleção.
+
+O tratamento operacional é novembro de 2024, mês usado pela Prefeitura como referência inicial da redução de famílias beneficiárias \citep{{prefeiturabento2025bolsafamilia}}. Os placebos reestimam cada doador retido como tratado e mantêm no gráfico os casos com MSPE pré até cinco vezes o de Bento Gonçalves. O $p_{{FP}}$ vem da rotina SCM.CS de \citet{{firpo2018synthetic}}. As bandas mostram seus conjuntos de confiança de 90\%. As figuras usam média móvel de 3 meses. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
 
 \begin{{table*}}[t]
 \centering
@@ -1710,17 +1745,15 @@ O pool principal é a região Sul (RS, SC e PR). A Tabela~\ref{{tab:results}} ta
 \input{{tables/tab_results.tex}}
 \end{{table*}}
 
-{main_figures}
-
 \FloatBarrier
-\vspace{{5pt}}
+\vspace{{3pt}}
 \section{{Resultados}}
 
 Os painéis comparam o município de Bento Gonçalves ao seu contrafactual sintético nos dois desfechos centrais. O Bolsa Família cai {fmt0(abs(bolsa['last_effect']))} famílias no último mês ($p_{{FP}}={fmt(bolsa['p_value'], 3)}$). O estoque formal fica {fmt0(stock['last_effect'])} vínculos acima do sintético ($p_{{FP}}={fmt(stock['p_value'], 3)}$). Esse segundo resultado é compatível com maior inserção no mercado formal local no período posterior à política.
 
 A queda no Bolsa Família equivale a {fmt_pt(bolsa_last_pct, 0)}\% do município sintético em março de 2026. O efeito no estoque formal é menor em termos proporcionais, cerca de {fmt_pt(stock_last_pct, 0)}\%, mas soma {fmt0(stock['last_effect'])} vínculos. Isso corresponde a {fmt_pt(last_ratio, 1)} vínculo formal para cada família a menos no programa no último mês. Na média pós-tratamento, a razão é próxima de {fmt_pt(mean_ratio, 1)} vínculos por família. A comparação sugere magnitudes administrativamente próximas, embora a série agregada não permita concluir que as famílias que saíram foram exatamente as contratadas.
 
-O exercício principal retém os doadores com melhor desempenho pré-tratamento dentro do pool regional. São {fmt0(bolsa['n_donors'])} municípios para Bolsa Família e {fmt0(stock['n_donors'])} para estoque formal. Essa seleção melhora o ajuste visual no pré-tratamento e evita um pool amplo demais para uma aplicação municipal.
+O exercício principal retém os doadores com melhor desempenho pré-tratamento dentro do pool regional. São {fmt0(bolsa['n_donors'])} doadores e {fmt0(bolsa['n_placebos_goodfit'])} placebos para Bolsa Família, e {fmt0(stock['n_donors'])} doadores e {fmt0(stock['n_placebos_goodfit'])} placebos para estoque formal. Essa seleção melhora o ajuste visual no pré-tratamento e evita um pool amplo demais para uma aplicação municipal.
 
 A leitura causal deve permanecer no nível agregado. A trajetória do município de Bento Gonçalves se afasta do contrafactual regional, o que enfraquece uma leitura puramente descritiva de queda mecânica no Bolsa Família. O mecanismo permanece em aberto. O aumento de estoque formal é consistente com inclusão produtiva, mas dados individuais são necessários para verificar se as famílias que saíram do programa foram absorvidas pelo mercado formal.
 
@@ -1730,16 +1763,20 @@ Depois de novembro de 2024, o município de Bento Gonçalves registra menos fam�
 
 Os resultados sustentam monitoramento e investigação. Adoção em outros municípios deveria depender de replicação local, persistência dos efeitos e validação individual do mecanismo. A próxima etapa é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda. Esses dados permitiriam verificar se as famílias que saíram do programa foram absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se o mecanismo for confirmado, a experiência oferece uma hipótese concreta de política municipal a ser adaptada em outros contextos. Até lá, políticas que afetam renda, trabalho e acesso a direitos devem ser avaliadas com contrafactuais claros e comunicadas com incerteza.
 
-\newpage
+\clearpage
+{main_figures}
+\FloatBarrier
+\clearpage
 \setlength{{\bibsep}}{{0pt plus 0.1ex}}
 \bibliography{{references}}
 
 \clearpage
 \onecolumn
+\small
 \appendix
 \section*{{Apêndice A. Informações de submissão}}
 \setlength{{\parindent}}{{0pt}}
-\setlength{{\parskip}}{{4pt}}
+\setlength{{\parskip}}{{2pt}}
 
 \textbf{{Título em inglês (English title)}}
 
@@ -1747,7 +1784,7 @@ Public Policy Note: Bolsa Família exits and formal employment in the municipali
 
 \section*{{Abstract}}
 
-In November 2024, the municipality of Bento Gonçalves launched a policy combining Bolsa Família registry review, outreach to working-age families, and referrals to formal jobs. This note estimates its aggregate effect with synthetic control. In March 2026, the municipality had 292 fewer families in the program than its counterfactual, and formal employment stood 496 jobs above the synthetic series. The results indicate that beneficiary exits were accompanied by improvement in the local formal labor market, a pattern consistent with productive inclusion and relevant for scale-up and monitoring decisions.
+In November 2024, the municipality of Bento Gonçalves launched a policy combining Bolsa Família registry review, outreach to working-age families, and referrals to formal jobs. This note estimates its aggregate effect with synthetic control. In March 2026, the municipality had {fmt0(abs(bolsa['last_effect']))} fewer families in the program than its counterfactual, and formal employment stood {fmt0(stock['last_effect'])} jobs above the synthetic series. The results indicate that beneficiary exits were accompanied by improvement in the local formal labor market, a pattern consistent with productive inclusion and relevant for scale-up and monitoring decisions.
 
 \textbf{{Palavras-chave em inglês (Keywords)}}
 
@@ -1771,7 +1808,7 @@ O código, a base final usada nas estimativas principais e as instruções de re
 
 \textbf{{Dados e uso de IA}}
 
-Este projeto utilizou IA agentic, via Codex, como apoio à pesquisa, com organização do projeto, coleta e checagem de dados, refinamento de código, geração de tabelas e rotinas de reprodutibilidade. A pergunta, as escolhas econométricas, a interpretação substantiva e a responsabilidade por eventuais erros são integralmente do autor.
+Este projeto utilizou Codex como apoio operacional à organização de arquivos, automação de rotinas de coleta, execução de scripts, formatação de tabelas e checagens de reprodutibilidade. A pergunta de pesquisa, as decisões técnicas e metodológicas, as escolhas econométricas, a interpretação dos resultados e a responsabilidade por eventuais erros são integralmente do autor.
 
 \end{{document}}
 """

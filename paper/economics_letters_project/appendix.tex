@@ -1,7 +1,7 @@
 \documentclass[10pt,twocolumn]{article}
 
 \usepackage[letterpaper,margin=0.56in]{geometry}
-\usepackage{amsmath,amssymb,graphicx,booktabs,threeparttable,natbib,float,subcaption,placeins}
+\usepackage{amsmath,amssymb,graphicx,booktabs,threeparttable,natbib,float,subcaption,placeins,titlesec}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -12,6 +12,7 @@
 \setcitestyle{authoryear,round}
 \captionsetup{font=scriptsize,labelfont=bf}
 \captionsetup[subfigure]{font=scriptsize,skip=1pt}
+\titlespacing*{\section}{0pt}{6pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
 \setlength{\floatsep}{4pt plus 1pt minus 1pt}
 \setlength{\textfloatsep}{5pt plus 1pt minus 1pt}
 \setlength{\dblfloatsep}{4pt plus 1pt minus 1pt}
@@ -30,7 +31,7 @@
 \renewcommand{\refname}{Referências}
 \renewcommand{\tablename}{Tabela}
 \renewcommand{\figurename}{Figura}
-\newcommand{\tabnotes}[1]{\par\vspace{2pt}\noindent\begin{minipage}{\linewidth}\footnotesize #1\end{minipage}}
+\newcommand{\tabnotes}[1]{\par\vspace{2pt}\noindent\begin{minipage}{\linewidth}\scriptsize #1\end{minipage}}
 \title{\vspace{-1.35cm}\textbf{Apêndice: robustez com pool RS}}
 \author{Victor Rangel\textsuperscript{*}\\[-1pt]{\normalsize Insper}}
 \date{}
@@ -66,7 +67,7 @@ Este apêndice reporta a robustez dos quatro desfechos principais com pool restr
 \subcaptionbox{Estoque formal: Placebos}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_app-rs_02_emprego_estoque_placebo.pdf}}
 \end{minipage}%
 }
-\caption{Controle sintético, pool Rio Grande do Sul. Painéis à esquerda reportam famílias beneficiárias. Painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. No último mês, o efeito é -312 famílias no Bolsa Família ($p_{FP}=0.077$) e 559 vínculos no estoque formal ($p_{FP}=0.095$). Robustez para o pool restrito ao RS.}
+\caption{Controle sintético, pool Rio Grande do Sul. Painéis à esquerda reportam famílias beneficiárias. Painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. No último mês, o efeito é -320 famílias no Bolsa Família ($p_{FP}=0.062$) e 921 vínculos no estoque formal ($p_{FP}=0.077$). Robustez para o pool restrito ao RS.}
 \label{fig:app-rs-att}
 
 \end{figure*}

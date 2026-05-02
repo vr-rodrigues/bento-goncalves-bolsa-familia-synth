@@ -221,6 +221,8 @@ def axis_tick_label(value: float) -> str:
         return ""
     value = float(value)
     abs_value = abs(value)
+    if abs_value < 1e-8:
+        return "0"
     if abs_value >= 100:
         return f"{value:,.0f}".replace(",", ".")
     if abs_value >= 10:
@@ -228,6 +230,38 @@ def axis_tick_label(value: float) -> str:
     if abs_value >= 1:
         return f"{value:.1f}"
     return f"{value:.2f}"
+
+
+def nice_tick_step(span: float, target_ticks: int = 4, minimum: float = 100.0) -> float:
+    if span <= 0 or pd.isna(span):
+        return minimum
+    raw = max(float(span) / max(target_ticks, 1), minimum)
+    magnitude = 10 ** math.floor(math.log10(raw))
+    for multiplier in [1, 2, 5, 10]:
+        step = multiplier * magnitude
+        if step >= raw:
+            return step
+    return 10 * magnitude
+
+
+def rounded_axis_ticks(
+    y_low: float,
+    y_high: float,
+    *,
+    include_zero: bool = False,
+    minimum_step: float = 100.0,
+    target_ticks: int = 4,
+) -> list[float]:
+    if not np.isfinite(y_low) or not np.isfinite(y_high) or y_high <= y_low:
+        return []
+    step = nice_tick_step(y_high - y_low, target_ticks=target_ticks, minimum=minimum_step)
+    first = math.ceil(y_low / step) * step
+    last = math.floor(y_high / step) * step
+    ticks = list(np.arange(first, last + step * 0.5, step))
+    if include_zero and y_low < 0 < y_high and not any(abs(t) < 1e-8 for t in ticks):
+        ticks.append(0.0)
+        ticks = sorted(ticks)
+    return [float(t) for t in ticks]
 
 
 def moving_average(values: pd.Series, window: int) -> pd.Series:
@@ -747,6 +781,7 @@ def draw_axes(
     x_label: bool = False,
     y_low: float | None = None,
     y_high: float | None = None,
+    y_ticks: list[float] | None = None,
 ) -> None:
     c.setStrokeColor(colors.black)
     c.setLineWidth(0.45)
@@ -777,16 +812,19 @@ def draw_axes(
     if y_low is not None and y_high is not None and y_high > y_low:
         c.setStrokeColor(colors.black)
         c.setLineWidth(0.35)
-        c.setFont("Helvetica", 5.7)
-        for value in [y_low, (y_low + y_high) / 2, y_high]:
+        c.setFont("Helvetica", 5.5)
+        tick_values = y_ticks if y_ticks is not None else [y_low, (y_low + y_high) / 2, y_high]
+        for value in tick_values:
+            if value < y_low or value > y_high:
+                continue
             y = bottom + (float(value) - y_low) * height / (y_high - y_low)
             c.line(left - 2.5, y, left, y)
             c.drawRightString(left - 4.5, y - 1.8, axis_tick_label(value))
     if y_label:
         c.saveState()
-        c.translate(left - 26, bottom + height / 2)
+        c.translate(left - 39, bottom + height / 2)
         c.rotate(90)
-        c.setFont("Helvetica", 6.5)
+        c.setFont("Helvetica", 6.3)
         c.drawCentredString(0, 0, y_label)
         c.restoreState()
 
@@ -810,11 +848,24 @@ def draw_actual_synth_panel(
     values = actual.tolist() + synth.tolist()
     low, high = min(values), max(values)
     pad = (high - low) * 0.08 if high > low else 1
-    xy = _panel_scale(values, low - pad, high + pad, left, bottom, width, height)
+    y_low, y_high = low - pad, high + pad
+    xy = _panel_scale(values, y_low, y_high, left, bottom, width, height)
     xs = [xy(i, v, len(months))[0] for i, v in enumerate(actual)]
     y_actual = [xy(i, v, len(months))[1] for i, v in enumerate(actual)]
     y_synth = [xy(i, v, len(months))[1] for i, v in enumerate(synth)]
-    draw_axes(c, left, bottom, width, height, months, treatment_month, y_label=y_label)
+    draw_axes(
+        c,
+        left,
+        bottom,
+        width,
+        height,
+        months,
+        treatment_month,
+        y_label=y_label,
+        y_low=y_low,
+        y_high=y_high,
+        y_ticks=rounded_axis_ticks(y_low, y_high, minimum_step=100),
+    )
     draw_line(c, xs, y_actual, colors.black, width=1.1)
     draw_line(c, xs, y_synth, colors.black, width=0.75, dash=True)
     c.setFillColor(colors.black)
@@ -849,8 +900,23 @@ def draw_placebo_panel(
             values.extend(s.dropna().tolist())
     low, high = min(values + [0.0]), max(values + [0.0])
     pad = (high - low) * 0.08 if high > low else 1
-    xy = _panel_scale(values, low - pad, high + pad, left, bottom, width, height)
-    draw_axes(c, left, bottom, width, height, months, treatment_month, y_label=y_label)
+    y_low, y_high = low - pad, high + pad
+    xy = _panel_scale(values, y_low, y_high, left, bottom, width, height)
+    draw_axes(
+        c,
+        left,
+        bottom,
+        width,
+        height,
+        months,
+        treatment_month,
+        y_label=y_label,
+        y_low=y_low,
+        y_high=y_high,
+        y_ticks=rounded_axis_ticks(
+            y_low, y_high, include_zero=True, minimum_step=100, target_ticks=6
+        ),
+    )
     zero_y = xy(0, 0.0, len(months))[1]
     c.setStrokeColor(colors.HexColor("#c8c8c8"))
     c.setDash(5, 4)
@@ -913,6 +979,9 @@ def draw_ci_panel(
         y_label=y_label,
         y_low=y_low,
         y_high=y_high,
+        y_ticks=rounded_axis_ticks(
+            y_low, y_high, include_zero=True, minimum_step=100, target_ticks=6
+        ),
     )
     zero_y = xy(0, 0.0, len(months))[1]
     c.setStrokeColor(colors.HexColor("#c8c8c8"))
@@ -1087,7 +1156,7 @@ def draw_panel_pdf(result: dict, path: Path, panel: str, outcome_key: str) -> No
     path.parent.mkdir(parents=True, exist_ok=True)
     page_w, page_h = 3.10 * inch, 1.48 * inch
     c = canvas.Canvas(str(path), pagesize=(page_w, page_h))
-    area = (0.48 * inch, 0.25 * inch, page_w - 0.56 * inch, page_h - 0.33 * inch)
+    area = (0.68 * inch, 0.25 * inch, page_w - 0.83 * inch, page_h - 0.33 * inch)
     ts = result["timeseries"]
     gaps = result["placebo_gaps"]
     tr = result["intervention_month"]

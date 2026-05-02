@@ -1716,7 +1716,7 @@ Para a gestão pública, esse é justamente o ponto: políticas que afetam renda
 
 Public Policy Note: Bolsa Família exits and formal employment in the municipality of Bento Gonçalves.
 
-\textbf{{Resumo em inglês (Abstract)}}
+\section*{{Abstract}}
 
 This note evaluates whether the decline in the number of Bolsa Família families in the municipality of Bento Gonçalves is compatible with the municipal policy, rather than only with a regional trend. I compare the municipality with a synthetic combination of similar municipalities in Brazil's South region. The counterfactual indicates a relevant additional reduction: in March 2026, there were 292 fewer families in the program relative to the synthetic municipality. A positive signal also appears in the formal employment stock. Because the data are aggregated, the exercise does not show that the same families were hired; but it indicates an aggregate causal pattern that deserves investigation with disaggregated data.
 

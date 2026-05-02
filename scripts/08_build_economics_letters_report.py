@@ -1518,7 +1518,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \usepackage{{lmodern}}
 \usepackage{{caption}}
 \usepackage{{hyperref}}
-\hypersetup{{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black}}
+\hypersetup{{colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=black}}
 \bibliographystyle{{plainnat}}
 \setcitestyle{{authoryear,round}}
 \captionsetup{{font=scriptsize,labelfont=bf}}

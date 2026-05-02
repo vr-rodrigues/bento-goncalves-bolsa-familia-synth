@@ -1476,6 +1476,15 @@ def write_references() -> None:
   year = {2026},
 }
 
+@techreport{pradofirpo2026integridade,
+  author = {Prado, Thaline and Firpo, Sergio Pinheiro},
+  title = {Propostas infralegais para integridade e correção de benefícios de proteção social: eficiência do gasto e recomposição da capacidade fiscal},
+  institution = {Observatório da Qualidade do Gasto Público, Centro de Gestão de Políticas Públicas, Insper},
+  type = {Relatório de pesquisa},
+  year = {2026},
+  url = {https://repositorio.insper.edu.br/handle/11224/8307},
+}
+
 @misc{mdsvisdata,
   author = {{Ministerio do Desenvolvimento e Assistencia Social}},
   title = {MDS/VISDATA: municipal series for Bolsa Familia},
@@ -1678,7 +1687,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 
 \section{{Introdução}}
 
-Governos locais podem afetar o número de beneficiários de programas sociais por revisão cadastral, busca ativa e intermediação no mercado de trabalho. Quando a ação municipal aproxima famílias em idade produtiva de vagas formais, a queda administrativa deve ser lida junto com o emprego local. A meta-análise de \citet{{card2018what}} mostra que políticas ativas de mercado de trabalho tendem a ter efeitos pequenos no curto prazo e mais positivos depois de dois ou três anos, com heterogeneidade por desenho e público atendido.
+Para decisão pública, a queda cadastral é um resultado intermediário. O gestor precisa distinguir correção de elegibilidade, inserção produtiva e choques locais. Essa distinção é familiar em políticas com incentivos. Indicadores mais próximos da regra de decisão podem responder, enquanto desfechos finais exigem evidência própria. No campo da proteção social, \citet{{pradofirpo2026integridade}} defendem batimentos de bases e revisão orientada por risco para fortalecer a integridade de benefícios, a eficiência do gasto e a capacidade fiscal. Quando a ação municipal aproxima famílias em idade produtiva de vagas formais, a queda administrativa deve ser lida junto com o emprego local. A meta-análise de \citet{{card2018what}} mostra que políticas ativas de mercado de trabalho tendem a ter efeitos pequenos no curto prazo e mais positivos depois de dois ou três anos, com heterogeneidade por desenho e público atendido.
 
 Transferências condicionadas também podem alterar trajetórias de longo prazo. Programas como o Bolsa Família combinam alívio de pobreza no curto prazo com incentivos a capital humano. No Brasil, avaliações encontram efeitos positivos sobre escolaridade \citep{{glewwe2012bolsa,debrauw2015schooling}} e mobilidade posterior via saída de programas sociais e acesso ao emprego formal \citep{{fassarella2024mobility}}. No México, \citet{{parker2023cct}} mostram que a exposição infantil ao Progresa aumentou escolaridade, mobilidade geográfica, desempenho no mercado de trabalho e padrão de vida das mulheres na idade adulta.
 
@@ -1719,7 +1728,7 @@ A leitura causal deve permanecer no nível agregado. A trajetória do município
 
 Depois de novembro de 2024, o município de Bento Gonçalves registra menos famílias no Bolsa Família e mais vínculos formais do que seria esperado a partir de municípios semelhantes da região Sul. O contrafactual sintético disciplina a comparação e reduz o risco de confundir a política local com movimentos regionais comuns. A leitura mais prudente é que há evidência consistente de queda adicional no Bolsa Família e sinal compatível de melhora no mercado formal local. O desenho não identifica quem saiu do programa.
 
-Políticas que afetam renda, trabalho e acesso a direitos precisam de avaliação antes de serem difundidas. A próxima etapa é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda. Esses dados permitiriam verificar se as famílias que saíram do programa foram absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se o mecanismo for confirmado, a experiência oferece uma hipótese concreta de política municipal a ser adaptada em outros contextos. Até lá, o resultado deve ser comunicado com sua incerteza.
+Os resultados sustentam monitoramento e investigação. Adoção em outros municípios deveria depender de replicação local, persistência dos efeitos e validação individual do mecanismo. A próxima etapa é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda. Esses dados permitiriam verificar se as famílias que saíram do programa foram absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se o mecanismo for confirmado, a experiência oferece uma hipótese concreta de política municipal a ser adaptada em outros contextos. Até lá, políticas que afetam renda, trabalho e acesso a direitos devem ser avaliadas com contrafactuais claros e comunicadas com incerteza.
 
 \newpage
 \setlength{{\bibsep}}{{0pt plus 0.1ex}}

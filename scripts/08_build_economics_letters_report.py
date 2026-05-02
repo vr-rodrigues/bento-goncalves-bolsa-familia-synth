@@ -1653,7 +1653,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 ]
 \begingroup
 \renewcommand{{\thefootnote}}{{*}}
-\footnotetext{{E-mail: \href{{mailto:victorrsr@al.insper.edu.br}}{{victorrsr@al.insper.edu.br}}.}}
+\footnotetext{{E-mail: \href{{mailto:victorrsr@al.insper.edu.br}}{{victorrsr@al.insper.edu.br}}. ORCID: \href{{https://orcid.org/0000-0002-4520-2795}}{{https://orcid.org/0000-0002-4520-2795}}.}}
 \endgroup
 
 \section{{Introdução}}
@@ -1701,13 +1701,48 @@ Esta nota mostra que uma política municipal pode ser avaliada com um contrafact
 
 Para a gestão pública, esse é justamente o ponto: políticas que afetam renda, trabalho e acesso a direitos devem ser desenhadas, monitoradas e corrigidas com evidência. A próxima etapa natural é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda para verificar se as famílias que saíram do programa foram as mesmas absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se esse mecanismo for confirmado, a experiência passa a oferecer uma hipótese concreta de política municipal a ser copiada e adaptada. Mesmo antes desse passo, a análise mostra que bons programas públicos devem ser avaliados com hipóteses explícitas, contrafactuais claros e comunicação honesta da incerteza.
 
-\section*{{Dados e uso de IA}}
-
-Este projeto utilizou IA agentic, via Codex, como apoio à pesquisa: organização do projeto, coleta e checagem de dados, refinamento de código, geração de tabelas e rotinas de reprodutibilidade. A pergunta, as escolhas econométricas, a interpretação substantiva e a responsabilidade por eventuais erros são integralmente do autor. O projeto completo, com códigos, base final e instruções de reprodução, está disponível em \url{{https://github.com/vr-rodrigues/bento-goncalves-bolsa-familia-synth}}.
-
 \newpage
 \setlength{{\bibsep}}{{0pt plus 0.1ex}}
 \bibliography{{references}}
+
+\clearpage
+\onecolumn
+\appendix
+\section*{{Apêndice A. Informações de submissão}}
+\setlength{{\parindent}}{{0pt}}
+\setlength{{\parskip}}{{4pt}}
+
+\textbf{{Título em inglês (English title)}}
+
+Public Policy Note: Bolsa Família exits and formal employment in the municipality of Bento Gonçalves.
+
+\textbf{{Resumo em inglês (Abstract)}}
+
+This note evaluates whether the decline in the number of Bolsa Família families in the municipality of Bento Gonçalves is compatible with the municipal policy, rather than only with a regional trend. I compare the municipality with a synthetic combination of similar municipalities in Brazil's South region. The counterfactual indicates a relevant additional reduction: in March 2026, there were 292 fewer families in the program relative to the synthetic municipality. A positive signal also appears in the formal employment stock. Because the data are aggregated, the exercise does not show that the same families were hired; but it indicates an aggregate causal pattern that deserves investigation with disaggregated data.
+
+\textbf{{Palavras-chave em inglês (Keywords)}}
+
+Bolsa Família; synthetic control; municipal policy; formal employment.
+
+\textbf{{ORCID}}
+
+Victor Rangel: \href{{https://orcid.org/0000-0002-4520-2795}}{{https://orcid.org/0000-0002-4520-2795}}.
+
+\textbf{{Declaração de contribuição dos autores}}
+
+Este manuscrito é de autoria única; portanto, a declaração de contribuição dos autores não se aplica.
+
+\textbf{{Conflito de interesses (Conflict of interest)}}
+
+O autor declara não haver conflito de interesses financeiro, institucional ou pessoal relacionado a este manuscrito.
+
+\textbf{{Declaração de disponibilidade de dados de pesquisa (Data availability statement)}}
+
+O código, a base final usada nas estimativas principais e as instruções de reprodução estão disponíveis em \url{{https://github.com/vr-rodrigues/bento-goncalves-bolsa-familia-synth}}. Os dados brutos são provenientes de bases públicas e podem ser regenerados pelos scripts e consultas SQL do projeto.
+
+\textbf{{Dados e uso de IA}}
+
+Este projeto utilizou IA agentic, via Codex, como apoio à pesquisa: organização do projeto, coleta e checagem de dados, refinamento de código, geração de tabelas e rotinas de reprodutibilidade. A pergunta, as escolhas econométricas, a interpretação substantiva e a responsabilidade por eventuais erros são integralmente do autor.
 
 \end{{document}}
 """

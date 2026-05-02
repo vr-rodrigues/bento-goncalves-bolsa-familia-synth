@@ -1137,7 +1137,7 @@ def weights_composition_note(weights: pd.DataFrame, label: str, max_items: int =
         parts.append(f"{municipio}/{uf} {weight:.1f}%")
     count = len(positive)
     detail = ", ".join(parts)
-    return f"{label} ({count} com peso positivo): {detail}"
+    return f"{label} tem {count} municípios com peso positivo, liderados por {detail}"
 
 
 def significance_stars(p_value: float | int | None) -> str:
@@ -1428,12 +1428,13 @@ def write_references() -> None:
 }
 
 @article{fassarella2024mobility,
-  author = {Fassarella, Eloah and Ferreira, Sergio and Franco, Samuel and Pinho Neto, Valdemar and Ribeiro, Giovanna and Schuabb, Victor and Tafner, Paulo},
+  author = {Fassarella, Eloah and Ferreira, Sergio and Franco, Samuel and Franco, Stefano and Pinho Neto, Valdemar and Ribeiro, Giovanna and Schuabb, Vinicius and Tafner, Paulo},
   title = {Social Mobility and CCT Programs: The Bolsa Familia Program in Brazil},
   journal = {World Development Perspectives},
   year = {2024},
   volume = {35},
   pages = {100624},
+  doi = {10.1016/j.wdp.2024.100624},
 }
 
 @article{banerjee2017lazy,
@@ -1549,9 +1550,19 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 
     def outcome_effect_note(outcome_key: str, pool_key: str) -> str:
         row = summary[(summary["outcome"] == outcome_key) & (summary["pool"] == pool_key)].iloc[0]
+        if outcome_key == "bolsa_familia":
+            return (
+                f"{fmt_effect(row['last_effect'], outcome_key)} famílias no Bolsa Família "
+                f"($p_{{FP}}={fmt(row['p_value'], 3)}$)"
+            )
+        if outcome_key == "emprego_estoque":
+            return (
+                f"{fmt_effect(row['last_effect'], outcome_key)} vínculos no estoque formal "
+                f"($p_{{FP}}={fmt(row['p_value'], 3)}$)"
+            )
         return (
-            f"{OUTCOME_SHORT_LABELS.get(outcome_key, outcome_key)}: "
-            f"{fmt_effect(row['last_effect'], outcome_key)} ($p_{{FP}}={fmt(row['p_value'], 3)}$)"
+            f"{fmt_effect(row['last_effect'], outcome_key)} em "
+            f"{OUTCOME_SHORT_LABELS.get(outcome_key, outcome_key)} ($p_{{FP}}={fmt(row['p_value'], 3)}$)"
         )
 
     def pool_composition_note(outcomes: list[str], pool_key: str) -> str:
@@ -1565,7 +1576,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
                     max_items=3,
                 )
             )
-        return tex_escape("; ".join(notes)) + "."
+        return tex_escape(". ".join(notes)) + "."
 
     def panel_wall_figure(
         outcomes: list[str],
@@ -1601,13 +1612,17 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
                 + boxes[(outcomes[1], panel_name)]
             )
         rows = ("\n\n" + r"\vspace{2pt}" + "\n").join(rows)
-        notes = "; ".join(outcome_effect_note(outcome_key, prefix) for outcome_key in outcomes)
+        notes = [outcome_effect_note(outcome_key, prefix) for outcome_key in outcomes]
+        if len(notes) == 2:
+            effects_sentence = f"No último mês, o efeito é {notes[0]} e {notes[1]}."
+        else:
+            effects_sentence = "No último mês, o efeito é " + ", ".join(notes) + "."
         extra = f" {caption_extra}" if caption_extra else ""
         composition_block = (
             rf"""
 \par\vspace{{1pt}}
 \begin{{minipage}}{{0.96\textwidth}}
-\footnotesize\emph{{Composição do pool sintético, principais pesos: {composition_note}}}
+\footnotesize\emph{{Principais pesos do pool sintético. {composition_note}}}
 \end{{minipage}}
 """
             if composition_note
@@ -1621,7 +1636,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 {rows}
 \end{{minipage}}%
 }}
-\caption{{Controle sintético -- pool {pool_label}. Painéis à esquerda reportam famílias beneficiárias; painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. Efeito no último mês: {notes}.{extra}}}
+\caption{{Controle sintético, pool {pool_label}. Painéis à esquerda reportam famílias beneficiárias. Painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. {effects_sentence}{extra}}}
 \label{{fig:{label_prefix}-att}}
 {composition_block}
 \end{{figure*}}
@@ -1650,7 +1665,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \maketitle
 \vspace{{-0.55cm}}
 \begin{{abstract}}
-\noindent Esta nota avalia se a queda no número de famílias do Bolsa Família no município de Bento Gonçalves é compatível com a política municipal, e não apenas com uma tendência regional. Comparo o município com uma combinação sintética de municípios parecidos da região Sul. O contrafactual indica redução adicional relevante: em março de 2026, havia {fmt0(abs(bolsa['last_effect']))} famílias a menos no programa em relação ao município sintético. Também aparece um sinal positivo no estoque formal de empregos. Como os dados são agregados, o exercício não mostra que as mesmas famílias foram contratadas; mas indica um padrão agregado causal que merece investigação com dados desagregados.
+\noindent Esta nota avalia a queda no número de famílias do Bolsa Família no município de Bento Gonçalves após a política municipal iniciada em novembro de 2024. Comparo o município com uma combinação sintética de municípios semelhantes da região Sul. Em março de 2026, havia {fmt0(abs(bolsa['last_effect']))} famílias a menos no programa em relação ao município sintético. O estoque formal de empregos também fica acima do contrafactual. Como os dados são agregados, o exercício não identifica se as famílias que saíram foram contratadas. Ele documenta um padrão municipal que merece investigação com dados desagregados.
 \end{{abstract}}
 \vspace{{0.05cm}}
 \noindent{{\footnotesize \textbf{{Palavras-chave:}} Bolsa Família; controle sintético; política municipal; emprego formal. \textbf{{JEL:}} I38; J68; C23; H53.}}
@@ -1663,21 +1678,21 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 
 \section{{Introdução}}
 
-Governos locais podem afetar o número de beneficiários de programas sociais por revisão cadastral, busca ativa e intermediação no mercado de trabalho. Se a política do município de Bento Gonçalves realmente aproximou famílias em idade produtiva de vagas formais, a expectativa substantiva não seria apenas reduzir o Bolsa Família, mas também aumentar a inserção produtiva local. Essa expectativa é consistente com a literatura sobre políticas ativas de mercado de trabalho: programas de assistência à busca, intermediação, treinamento e apoio ao emprego podem elevar resultados laborais, embora os efeitos dependam do desenho, do horizonte e do grupo atendido \citep{{card2018what}}.
+Governos locais podem afetar o número de beneficiários de programas sociais por revisão cadastral, busca ativa e intermediação no mercado de trabalho. Quando a ação municipal aproxima famílias em idade produtiva de vagas formais, a queda administrativa deve ser lida junto com o emprego local. A meta-análise de \citet{{card2018what}} mostra que políticas ativas de mercado de trabalho tendem a ter efeitos pequenos no curto prazo e mais positivos depois de dois ou três anos, com heterogeneidade por desenho e público atendido.
 
-A literatura de transferências condicionadas também sugere que o canal relevante não é mecânico. Programas como o Bolsa Família combinam alívio de pobreza no curto prazo com incentivos a capital humano no longo prazo. No Brasil, há evidência de efeitos positivos sobre escolaridade \citep{{glewwe2012bolsa,debrauw2015schooling}} e de mobilidade posterior via saída de programas sociais e acesso ao emprego formal \citep{{fassarella2024mobility}}. Em outro contexto latino-americano, evidência de longo prazo no \textit{{Economic Journal}} mostra que transferências condicionadas podem afetar escolaridade, mobilidade geográfica e resultados econômicos da geração seguinte \citep{{parker2023cct}}.
+Transferências condicionadas também podem alterar trajetórias de longo prazo. Programas como o Bolsa Família combinam alívio de pobreza no curto prazo com incentivos a capital humano. No Brasil, avaliações encontram efeitos positivos sobre escolaridade \citep{{glewwe2012bolsa,debrauw2015schooling}} e mobilidade posterior via saída de programas sociais e acesso ao emprego formal \citep{{fassarella2024mobility}}. No México, \citet{{parker2023cct}} mostram que a exposição infantil ao Progresa aumentou escolaridade, mobilidade geográfica, desempenho no mercado de trabalho e padrão de vida das mulheres na idade adulta.
 
-Ao mesmo tempo, a evidência tampouco sustenta uma narrativa simples de que transferências desincentivam o trabalho. Estudos sobre o Bolsa Família encontram efeitos nulos ou heterogêneos sobre oferta de trabalho e informalidade \citep{{debrauw2015labor,barbosa2014informality}}, enquanto a evidência experimental internacional não encontra redução sistemática de emprego em programas de transferência \citep{{banerjee2017lazy}}. Para beneficiários brasileiros de baixa renda, também há evidência de maior duração no emprego formal \citep{{santos2017duration}} e, mais recentemente, de que uma expansão de transferência pode aumentar emprego e melhorar saúde quando relaxa restrições relevantes \citep{{best2026productive}}.
+A evidência sobre trabalho é mais cautelosa do que a narrativa de desincentivo sugere. Para o Bolsa Família, \citet{{debrauw2015labor}} não encontram queda agregada na oferta de trabalho, embora documentem realocação de horas entre setores e membros do domicílio. \citet{{barbosa2014informality}} não encontram efeito robusto do programa sobre informalidade. Em sete experimentos de transferências de renda, \citet{{banerjee2017lazy}} não encontram redução sistemática de trabalho. Para beneficiários brasileiros de baixa renda, \citet{{santos2017duration}} estimam menor risco de saída do emprego formal. \citet{{best2026productive}} mostram que uma expansão recente do Bolsa Família elevou emprego e melhorou saúde ao relaxar restrições de subsistência.
 
-Essa literatura torna natural olhar simultaneamente para saídas do Bolsa Família e estoque formal de vínculos. O estoque de vínculos não identifica diretamente se as famílias que saíram do programa foram as mesmas que obtiveram emprego formal, mas é um desfecho agregado adequado para investigar se a queda administrativa veio acompanhada de melhora no mercado de trabalho local. Ainda assim, saídas do programa podem refletir revisões cadastrais, choques regionais ou dinâmicas comuns a municípios semelhantes. Por isso, estimo um contrafactual sintético para o município de Bento Gonçalves e comparo a trajetória observada com um contrafactual construído a partir de municípios não tratados.
+Saídas do Bolsa Família e vínculos formais medem margens distintas da mesma política local. O estoque de vínculos é agregado e não liga famílias individuais a postos de trabalho. Ainda assim, ele permite verificar se a queda administrativa veio acompanhada de melhora no mercado de trabalho municipal. Como saídas do programa também podem refletir revisões cadastrais, choques regionais ou dinâmicas comuns a municípios semelhantes, estimo um contrafactual sintético para o município de Bento Gonçalves.
 
 \section{{Estratégia empírica}}
 
-O efeito mensal é $\alpha_{{1t}}=Y_{{1t}}-Y^N_{{1t}}$, em que $Y^N_{{1t}}$ é aproximado por uma combinação convexa de municípios não tratados, $\widehat{{Y}}^N_{{1t}}=\sum_jw_jY_{{jt}}$, com $w_j\geq0$ e $\sum_jw_j=1$. Os pesos minimizam a distância pré-tratamento usando apenas informação anterior à intervenção.
+A estratégia segue o controle sintético de \citet{{abadie2010synthetic}}. A ideia é comparar o município tratado com uma média ponderada de municípios não tratados que reproduza sua trajetória antes da intervenção. O efeito mensal é $\alpha_{{1t}}=Y_{{1t}}-Y^N_{{1t}}$, em que $Y^N_{{1t}}$ é aproximado por $\widehat{{Y}}^N_{{1t}}=\sum_jw_jY_{{jt}}$, com $w_j\geq0$ e $\sum_jw_j=1$. Os pesos minimizam a distância pré-tratamento usando apenas informação anterior à intervenção.
 
-Para melhorar o ajuste, aplico duas camadas de seleção. Primeiro, restrinjo os candidatos a municípios completos e comparáveis no pool geográfico. Segundo, entre os candidatos mais próximos, escolho o subconjunto de 12 a 25 doadores que minimiza o RMSPE pré-tratamento do município de Bento Gonçalves. Bolsa Família usa todos os lags mensais disponíveis desde março de 2023; estoque formal usa todos os lags desde fevereiro de 2023, mais log população/log PIB municipal. Nenhum resultado pós-tratamento participa da escolha.
+Seleciono doadores antes de estimar os pesos. Restrinjo os candidatos a municípios completos e comparáveis no pool geográfico. Entre os candidatos mais próximos, escolho o subconjunto de 12 a 25 doadores que minimiza o RMSPE pré-tratamento do município de Bento Gonçalves. Bolsa Família usa todos os lags mensais disponíveis desde março de 2023. Estoque formal usa todos os lags desde fevereiro de 2023, mais log população e log PIB municipal. Nenhum resultado pós-tratamento participa da escolha.
 
-O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{{tab:results}} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores reportados são os testes de efeito nulo derivados da rotina SCM.CS de \citet{{firpo2018synthetic}}; as bandas reportam seus conjuntos de confiança de 90\%. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
+O pool principal é a região Sul (RS, SC e PR). A Tabela~\ref{{tab:results}} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores reportados são os testes de efeito nulo derivados da rotina SCM.CS de \citet{{firpo2018synthetic}}. As bandas mostram seus conjuntos de confiança de 90\%. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
 
 \begin{{table*}}[t]
 \centering
@@ -1692,19 +1707,19 @@ O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{{tab:results}} 
 \vspace{{5pt}}
 \section{{Resultados}}
 
-A Figura~\ref{{fig:main-att}} reporta a trajetória observada e sintética, o gap com IC de 90\% e os placebos para os dois desfechos centrais. Dois resultados se destacam. O primeiro é a queda do Bolsa Família ({fmt0(bolsa['last_effect'])}; $p_{{FP}}={fmt(bolsa['p_value'], 3)}$), que permanece negativa e economicamente relevante. O segundo é o aumento do estoque formal de {fmt0(stock['last_effect'])} vínculos ($p_{{FP}}={fmt(stock['p_value'], 3)}$), compatível com a hipótese de que parte da saída do programa pode ter coincidido com maior inserção no mercado formal local.
+Os painéis comparam o município de Bento Gonçalves ao seu contrafactual sintético nos dois desfechos centrais. O Bolsa Família cai {fmt0(abs(bolsa['last_effect']))} famílias no último mês ($p_{{FP}}={fmt(bolsa['p_value'], 3)}$). O estoque formal fica {fmt0(stock['last_effect'])} vínculos acima do sintético ($p_{{FP}}={fmt(stock['p_value'], 3)}$). Esse segundo resultado é compatível com maior inserção no mercado formal local no período posterior à política.
 
-Em magnitude, a queda no Bolsa Família é grande em relação ao contrafactual: no último mês, equivale a {fmt_pt(bolsa_last_pct, 0)}\% do município sintético. O efeito no estoque formal é menor em termos proporcionais, cerca de {fmt_pt(stock_last_pct, 0)}\%, mas relevante em unidades absolutas: {fmt0(stock['last_effect'])} vínculos adicionais, ou {fmt_pt(last_ratio, 1)} vínculo formal para cada família a menos no programa. Na média pós-tratamento, a razão é próxima de {fmt_pt(mean_ratio, 1)} vínculos por família. Assim, os efeitos parecem da mesma ordem administrativa, embora a série agregada não permita concluir que as famílias que saíram foram exatamente as contratadas.
+A queda no Bolsa Família equivale a {fmt_pt(bolsa_last_pct, 0)}\% do município sintético em março de 2026. O efeito no estoque formal é menor em termos proporcionais, cerca de {fmt_pt(stock_last_pct, 0)}\%, mas soma {fmt0(stock['last_effect'])} vínculos. Isso corresponde a {fmt_pt(last_ratio, 1)} vínculo formal para cada família a menos no programa no último mês. Na média pós-tratamento, a razão é próxima de {fmt_pt(mean_ratio, 1)} vínculos por família. A comparação sugere magnitudes administrativamente próximas, embora a série agregada não permita concluir que as famílias que saíram foram exatamente as contratadas.
 
-A seleção mais enxuta de doadores melhora o ajuste visual no pré-tratamento e reduz a dependência de um pool grande demais para uma aplicação municipal. Em vez de usar quarenta municípios por padrão, o exercício principal retém os doadores com melhor desempenho pré-tratamento dentro do pool regional: {fmt0(bolsa['n_donors'])} para Bolsa Família e {fmt0(stock['n_donors'])} para estoque formal. Essa escolha torna a comparação mais próxima do município de Bento Gonçalves sem abandonar a lógica de controle sintético.
+O exercício principal retém os doadores com melhor desempenho pré-tratamento dentro do pool regional. São {fmt0(bolsa['n_donors'])} municípios para Bolsa Família e {fmt0(stock['n_donors'])} para estoque formal. Essa seleção melhora o ajuste visual no pré-tratamento e evita um pool amplo demais para uma aplicação municipal.
 
-Do ponto de vista substantivo, os resultados sugerem uma leitura intermediária. A trajetória do município de Bento Gonçalves se afasta do contrafactual regional, o que reduz a plausibilidade de uma narrativa puramente descritiva de queda mecânica no Bolsa Família. Ao mesmo tempo, o mecanismo causal permanece em aberto: o aumento de estoque formal é consistente com inclusão produtiva, mas dados individuais são necessários para verificar se as famílias que saíram do programa foram exatamente aquelas absorvidas pelo mercado formal.
+A leitura causal deve permanecer no nível agregado. A trajetória do município de Bento Gonçalves se afasta do contrafactual regional, o que enfraquece uma leitura puramente descritiva de queda mecânica no Bolsa Família. O mecanismo permanece em aberto. O aumento de estoque formal é consistente com inclusão produtiva, mas dados individuais são necessários para verificar se as famílias que saíram do programa foram absorvidas pelo mercado formal.
 
 \section{{Considerações finais}}
 
-Esta nota mostra que uma política municipal pode ser avaliada com um contrafactual transparente e replicável. Depois de novembro de 2024, o município de Bento Gonçalves passa a registrar menos famílias no Bolsa Família e mais vínculos formais do que seria esperado a partir de municípios semelhantes da região Sul. O exercício não transforma uma série agregada em prova individual, mas disciplina a comparação e reduz o risco de confundir a política local com movimentos regionais comuns. A leitura mais prudente é que há evidência consistente de queda adicional no Bolsa Família e sinal compatível de melhora no mercado formal local, não uma prova final sobre quem saiu do programa.
+Depois de novembro de 2024, o município de Bento Gonçalves registra menos famílias no Bolsa Família e mais vínculos formais do que seria esperado a partir de municípios semelhantes da região Sul. O contrafactual sintético disciplina a comparação e reduz o risco de confundir a política local com movimentos regionais comuns. A leitura mais prudente é que há evidência consistente de queda adicional no Bolsa Família e sinal compatível de melhora no mercado formal local. O desenho não identifica quem saiu do programa.
 
-Para a gestão pública, esse é justamente o ponto: políticas que afetam renda, trabalho e acesso a direitos devem ser desenhadas, monitoradas e corrigidas com evidência. A próxima etapa natural é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda para verificar se as famílias que saíram do programa foram as mesmas absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se esse mecanismo for confirmado, a experiência passa a oferecer uma hipótese concreta de política municipal a ser copiada e adaptada. Mesmo antes desse passo, a análise mostra que bons programas públicos devem ser avaliados com hipóteses explícitas, contrafactuais claros e comunicação honesta da incerteza.
+Políticas que afetam renda, trabalho e acesso a direitos precisam de avaliação antes de serem difundidas. A próxima etapa é ligar Cadastro Único, folha de pagamentos do programa, RAIS/CAGED e trajetórias de renda. Esses dados permitiriam verificar se as famílias que saíram do programa foram absorvidas pelo mercado formal, em quais ocupações, com que salários e por quanto tempo. Se o mecanismo for confirmado, a experiência oferece uma hipótese concreta de política municipal a ser adaptada em outros contextos. Até lá, o resultado deve ser comunicado com sua incerteza.
 
 \newpage
 \setlength{{\bibsep}}{{0pt plus 0.1ex}}
@@ -1723,7 +1738,7 @@ Public Policy Note: Bolsa Família exits and formal employment in the municipali
 
 \section*{{Abstract}}
 
-This note evaluates whether the decline in the number of Bolsa Família families in the municipality of Bento Gonçalves is compatible with the municipal policy, rather than only with a regional trend. I compare the municipality with a synthetic combination of similar municipalities in Brazil's South region. The counterfactual indicates a relevant additional reduction: in March 2026, there were 292 fewer families in the program relative to the synthetic municipality. A positive signal also appears in the formal employment stock. Because the data are aggregated, the exercise does not show that the same families were hired; but it indicates an aggregate causal pattern that deserves investigation with disaggregated data.
+This note evaluates the decline in the number of Bolsa Família families in the municipality of Bento Gonçalves after the municipal policy that began in November 2024. I compare the municipality with a synthetic combination of similar municipalities in Brazil's South region. In March 2026, Bento Gonçalves had 292 fewer families in the program relative to its synthetic counterfactual. Formal employment also lies above the synthetic series. Because the data are aggregated, the exercise does not identify whether the families that left the program were hired. It documents a municipal pattern that deserves investigation with disaggregated data.
 
 \textbf{{Palavras-chave em inglês (Keywords)}}
 
@@ -1735,7 +1750,7 @@ Victor Rangel: \href{{https://orcid.org/0000-0002-4520-2795}}{{https://orcid.org
 
 \textbf{{Declaração de contribuição dos autores}}
 
-Este manuscrito é de autoria única; portanto, a declaração de contribuição dos autores não se aplica.
+Este manuscrito é de autoria única. A declaração de contribuição dos autores não se aplica.
 
 \textbf{{Conflito de interesses (Conflict of interest)}}
 
@@ -1747,7 +1762,7 @@ O código, a base final usada nas estimativas principais e as instruções de re
 
 \textbf{{Dados e uso de IA}}
 
-Este projeto utilizou IA agentic, via Codex, como apoio à pesquisa: organização do projeto, coleta e checagem de dados, refinamento de código, geração de tabelas e rotinas de reprodutibilidade. A pergunta, as escolhas econométricas, a interpretação substantiva e a responsabilidade por eventuais erros são integralmente do autor.
+Este projeto utilizou IA agentic, via Codex, como apoio à pesquisa, com organização do projeto, coleta e checagem de dados, refinamento de código, geração de tabelas e rotinas de reprodutibilidade. A pergunta, as escolhas econométricas, a interpretação substantiva e a responsabilidade por eventuais erros são integralmente do autor.
 
 \end{{document}}
 """

@@ -619,6 +619,7 @@ def run_analysis() -> tuple[pd.DataFrame, dict]:
                 fp_ub_param = fp_meta.ub_param
                 fp_initial_param = fp_meta.initial_param
                 fp_significance = fp_meta.significance
+                fp_p_value = fp_meta.zero_p_value
             except RuntimeError as exc:
                 fp_error = str(exc)
                 fp_ci = pd.DataFrame(
@@ -640,6 +641,7 @@ def run_analysis() -> tuple[pd.DataFrame, dict]:
                 fp_ub_param = float("nan")
                 fp_initial_param = float("nan")
                 fp_significance = float("nan")
+                fp_p_value = float("nan")
             key = f"{outcome_key}_{pool_key}"
             ts = result["timeseries"].copy()
             ts.to_csv(OUT / f"{key}_timeseries.csv", index=False)
@@ -654,6 +656,7 @@ def run_analysis() -> tuple[pd.DataFrame, dict]:
             fp_ci.to_csv(OUT / f"{key}_firpo_possebom_ci.csv", index=False)
 
             metrics = result["metrics"]
+            placebo_p_value = p_value(metrics["post_pre_rmspe_ratio"], good_placebos)
             pre_gap = ts.loc[ts["anomes"].isin(pre_months), "effect_value"]
             post_gap = ts.loc[~ts["anomes"].isin(pre_months), "effect_value"]
             row = {
@@ -672,7 +675,9 @@ def run_analysis() -> tuple[pd.DataFrame, dict]:
                 "scale_mode": scale_mode,
                 "pre_rmspe": metrics["pre_rmspe_index"],
                 "post_pre_ratio": metrics["post_pre_rmspe_ratio"],
-                "p_value": p_value(metrics["post_pre_rmspe_ratio"], good_placebos),
+                "p_value": fp_p_value,
+                "fp_p_value": fp_p_value,
+                "placebo_p_value": placebo_p_value,
                 "mean_post_effect": metrics["mean_post_effect_value"],
                 "last_actual": metrics["last_actual_value"],
                 "last_synth": metrics["last_synth_value"],
@@ -1188,7 +1193,7 @@ def write_tables(summary: pd.DataFrame, results: dict) -> None:
 \setlength{\tabcolsep}{5pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}l c r r r r r@{}}
 \toprule
-Desfecho & Pool & Doadores & RMSPE pré & Pós/pré & $p$ & Efeito final \\
+Desfecho & Pool & Doadores & RMSPE pré & Pós/pré & $p_{FP}$ & Efeito final \\
 \midrule
 """ + rows + r"""
 \bottomrule
@@ -1221,7 +1226,7 @@ Desfecho & Pool & Doadores & RMSPE pré & Pós/pré & $p$ & Efeito final \\
 \scriptsize
 \begin{tabular}{l c r r r}
 \toprule
-Desfecho & Pool & Pós/pré & $p$ & Efeito final \\
+Desfecho & Pool & Pós/pré & $p_{FP}$ & Efeito final \\
 \midrule
 """ + rows + r"""
 \bottomrule
@@ -1238,8 +1243,8 @@ Desfecho & Pool & Pós/pré & $p$ & Efeito final \\
     main_note = (
         "A tabela reporta os desfechos destacados no texto principal, em suas unidades indicadas. "
         "Doadores é o número de municípios retidos na especificação escolhida pelo ajuste pré-tratamento. "
-        "Os $p$-valores placebo excluem doadores cujo MSPE pré-intervenção é mais de cinco vezes maior "
-        "que o MSPE pré-intervenção do município de Bento Gonçalves. "
+        "Os $p$-valores reportam o teste de efeito nulo de Firpo e Possebom (2018), "
+        "portado diretamente do bloco de ranqueamento da rotina SCM.CS dos autores. "
         "Estrelas no efeito final indicam \\textsuperscript{*}$p<0{,}10$, "
         "\\textsuperscript{**}$p<0{,}05$ e \\textsuperscript{***}$p<0{,}01$."
     )
@@ -1546,7 +1551,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
         row = summary[(summary["outcome"] == outcome_key) & (summary["pool"] == pool_key)].iloc[0]
         return (
             f"{OUTCOME_SHORT_LABELS.get(outcome_key, outcome_key)}: "
-            f"{fmt_effect(row['last_effect'], outcome_key)} ($p={fmt(row['p_value'], 3)}$)"
+            f"{fmt_effect(row['last_effect'], outcome_key)} ($p_{{FP}}={fmt(row['p_value'], 3)}$)"
         )
 
     def pool_composition_note(outcomes: list[str], pool_key: str) -> str:
@@ -1672,7 +1677,7 @@ O efeito mensal é $\alpha_{{1t}}=Y_{{1t}}-Y^N_{{1t}}$, em que $Y^N_{{1t}}$ é a
 
 Para melhorar o ajuste, aplico duas camadas de seleção. Primeiro, restrinjo os candidatos a municípios completos e comparáveis no pool geográfico. Segundo, entre os candidatos mais próximos, escolho o subconjunto de 12 a 25 doadores que minimiza o RMSPE pré-tratamento do município de Bento Gonçalves. Bolsa Família usa todos os lags mensais disponíveis desde março de 2023; estoque formal usa todos os lags desde fevereiro de 2023, mais log população/log PIB municipal. Nenhum resultado pós-tratamento participa da escolha.
 
-O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{{tab:results}} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores placebo excluem unidades com MSPE pré superior a cinco vezes o MSPE pré do município de Bento Gonçalves; as bandas reportam conjuntos de confiança de 90\% de \citet{{firpo2018synthetic}}. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
+O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{{tab:results}} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores reportados são os testes de efeito nulo derivados da rotina SCM.CS de \citet{{firpo2018synthetic}}; as bandas reportam seus conjuntos de confiança de 90\%. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
 
 \begin{{table*}}[t]
 \centering
@@ -1687,7 +1692,7 @@ O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{{tab:results}} 
 \vspace{{5pt}}
 \section{{Resultados}}
 
-A Figura~\ref{{fig:main-att}} reporta a trajetória observada e sintética, o gap com IC de 90\% e os placebos para os dois desfechos centrais. Dois resultados se destacam. O primeiro é a queda do Bolsa Família ({fmt0(bolsa['last_effect'])}; $p={fmt(bolsa['p_value'], 3)}$), que permanece negativa e economicamente relevante. O segundo é o aumento do estoque formal de {fmt0(stock['last_effect'])} vínculos ($p={fmt(stock['p_value'], 3)}$), compatível com a hipótese de que parte da saída do programa pode ter coincidido com maior inserção no mercado formal local.
+A Figura~\ref{{fig:main-att}} reporta a trajetória observada e sintética, o gap com IC de 90\% e os placebos para os dois desfechos centrais. Dois resultados se destacam. O primeiro é a queda do Bolsa Família ({fmt0(bolsa['last_effect'])}; $p_{{FP}}={fmt(bolsa['p_value'], 3)}$), que permanece negativa e economicamente relevante. O segundo é o aumento do estoque formal de {fmt0(stock['last_effect'])} vínculos ($p_{{FP}}={fmt(stock['p_value'], 3)}$), compatível com a hipótese de que parte da saída do programa pode ter coincidido com maior inserção no mercado formal local.
 
 Em magnitude, a queda no Bolsa Família é grande em relação ao contrafactual: no último mês, equivale a {fmt_pt(bolsa_last_pct, 0)}\% do município sintético. O efeito no estoque formal é menor em termos proporcionais, cerca de {fmt_pt(stock_last_pct, 0)}\%, mas relevante em unidades absolutas: {fmt0(stock['last_effect'])} vínculos adicionais, ou {fmt_pt(last_ratio, 1)} vínculo formal para cada família a menos no programa. Na média pós-tratamento, a razão é próxima de {fmt_pt(mean_ratio, 1)} vínculos por família. Assim, os efeitos parecem da mesma ordem administrativa, embora a série agregada não permita concluir que as famílias que saíram foram exatamente as contratadas.
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import ceil
 
 import numpy as np
 import pandas as pd
@@ -18,6 +17,8 @@ class SCMConfidenceSet:
     initial_param: float
     significance: float
     effect_type: str
+    zero_p_value: float
+    zero_reject: bool
 
 
 def _average_ranks(values: np.ndarray) -> np.ndarray:
@@ -137,7 +138,7 @@ def scm_confidence_set(
     if np.any((v < 0) | (v > 1)):
         raise ValueError("v entries must lie in [0, 1].")
     if significance is None:
-        significance = ceil(alpha * n_units) / n_units
+        significance = alpha
     if not 0 < significance < 1:
         raise ValueError("significance must lie in (0, 1).")
 
@@ -194,6 +195,16 @@ def scm_confidence_set(
     upper = _null_effect(n_periods, t0, ub, effect_type)
     low = np.minimum(lower, upper)
     high = np.maximum(lower, upper)
+    zero_reject, zero_p_value, _ = _test_null(
+        y_mat,
+        weights_mat,
+        treated,
+        t0,
+        np.zeros(n_periods, dtype=float),
+        phi,
+        v,
+        significance,
+    )
     return SCMConfidenceSet(
         lower=low,
         upper=high,
@@ -202,6 +213,8 @@ def scm_confidence_set(
         initial_param=param,
         significance=float(significance),
         effect_type=effect_type,
+        zero_p_value=zero_p_value,
+        zero_reject=zero_reject,
     )
 
 

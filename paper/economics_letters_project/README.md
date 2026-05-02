@@ -1,6 +1,6 @@
 # Nota em estilo Economics Letters
 
-Esta pasta contem a nota compacta em duas colunas, em portugues, com figuras montadas a partir de paineis separados. O apendice e um documento separado.
+Esta pasta contem uma nota compacta em duas colunas, em portugues, com figuras montadas a partir de paineis separados. O apendice e um documento separado.
 
 Arquivos principais:
 
@@ -11,7 +11,7 @@ Arquivos principais:
 - `figures/`: paineis separados de cada figura.
 - `tables/tab_results.tex`: tabela compacta de resultados.
 
-O texto principal destaca Bolsa Familia e estoque formal de vinculos. As consultas complementares estao em `../../sql/` e usam tabelas publicas da Base dos Dados no BigQuery.
+O texto principal destaca Bolsa Familia e estoque formal de vinculos. As consultas complementares estao em `../../sql/` e usam as tabelas publicas da Base dos Dados no BigQuery.
 
 Regenerar a partir da raiz do projeto:
 

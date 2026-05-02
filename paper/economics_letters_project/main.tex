@@ -67,7 +67,7 @@ O efeito mensal é $\alpha_{1t}=Y_{1t}-Y^N_{1t}$, em que $Y^N_{1t}$ é aproximad
 
 Para melhorar o ajuste, aplico duas camadas de seleção. Primeiro, restrinjo os candidatos a municípios completos e comparáveis no pool geográfico. Segundo, entre os candidatos mais próximos, escolho o subconjunto de 12 a 25 doadores que minimiza o RMSPE pré-tratamento do município de Bento Gonçalves. Bolsa Família usa todos os lags mensais disponíveis desde março de 2023; estoque formal usa todos os lags desde fevereiro de 2023, mais log população/log PIB municipal. Nenhum resultado pós-tratamento participa da escolha.
 
-O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{tab:results} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores placebo excluem unidades com MSPE pré superior a cinco vezes o MSPE pré do município de Bento Gonçalves; as bandas reportam conjuntos de confiança de 90\% de \citet{firpo2018synthetic}. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
+O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{tab:results} também mostra uma especificação restrita ao Rio Grande do Sul. O tratamento operacional é novembro de 2024. As figuras usam média móvel de 3 meses. Os $p$-valores reportados são os testes de efeito nulo derivados da rotina SCM.CS de \citet{firpo2018synthetic}; as bandas reportam seus conjuntos de confiança de 90\%. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
 
 \begin{table*}[t]
 \centering
@@ -93,7 +93,7 @@ O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{tab:results} ta
 \subcaptionbox{Estoque formal: Placebos}[0.486\textwidth]{\includegraphics[width=0.486\textwidth]{figures/fig_main_02_emprego_estoque_placebo.pdf}}
 \end{minipage}%
 }
-\caption{Controle sintético -- pool Sul. Painéis à esquerda reportam famílias beneficiárias; painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. Efeito no último mês: Bolsa Família: -292 ($p=0.077$); Estoque formal: 496 ($p=0.056$).}
+\caption{Controle sintético -- pool Sul. Painéis à esquerda reportam famílias beneficiárias; painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. Efeito no último mês: Bolsa Família: -292 ($p_{FP}=0.077$); Estoque formal: 496 ($p_{FP}=0.048$).}
 \label{fig:main-att}
 
 \par\vspace{1pt}
@@ -108,7 +108,7 @@ O pool principal é a região Sul (RS, SC e PR), e a Tabela~\ref{tab:results} ta
 \vspace{5pt}
 \section{Resultados}
 
-A Figura~\ref{fig:main-att} reporta a trajetória observada e sintética, o gap com IC de 90\% e os placebos para os dois desfechos centrais. Dois resultados se destacam. O primeiro é a queda do Bolsa Família (-292; $p=0.077$), que permanece negativa e economicamente relevante. O segundo é o aumento do estoque formal de 496 vínculos ($p=0.056$), compatível com a hipótese de que parte da saída do programa pode ter coincidido com maior inserção no mercado formal local.
+A Figura~\ref{fig:main-att} reporta a trajetória observada e sintética, o gap com IC de 90\% e os placebos para os dois desfechos centrais. Dois resultados se destacam. O primeiro é a queda do Bolsa Família (-292; $p_{FP}=0.077$), que permanece negativa e economicamente relevante. O segundo é o aumento do estoque formal de 496 vínculos ($p_{FP}=0.048$), compatível com a hipótese de que parte da saída do programa pode ter coincidido com maior inserção no mercado formal local.
 
 Em magnitude, a queda no Bolsa Família é grande em relação ao contrafactual: no último mês, equivale a 18\% do município sintético. O efeito no estoque formal é menor em termos proporcionais, cerca de 1\%, mas relevante em unidades absolutas: 496 vínculos adicionais, ou 1,7 vínculo formal para cada família a menos no programa. Na média pós-tratamento, a razão é próxima de 2,1 vínculos por família. Assim, os efeitos parecem da mesma ordem administrativa, embora a série agregada não permita concluir que as famílias que saíram foram exatamente as contratadas.
 

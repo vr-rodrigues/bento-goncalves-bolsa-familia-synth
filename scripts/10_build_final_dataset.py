@@ -77,6 +77,8 @@ def read_estimates() -> pd.DataFrame:
         "pre_rmspe",
         "post_pre_ratio",
         "p_value",
+        "fp_p_value",
+        "placebo_p_value",
         "mean_post_effect",
         "last_actual",
         "last_synth",

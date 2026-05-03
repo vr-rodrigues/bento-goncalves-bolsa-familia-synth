@@ -20,6 +20,7 @@ reports/
 outputs/tables/*.csv
 outputs/figures/*.svg
 outputs/economics_letters/*.csv
+outputs/economics_letters/*.png
 
 # Earlier exploratory LaTeX project; final note is in paper/economics_letters_project.
 paper/overleaf_project/

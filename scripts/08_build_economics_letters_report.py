@@ -1797,6 +1797,13 @@ A literatura de transferências condicionadas dá conteúdo a essa segunda marge
 
 Essa literatura orienta o teste, mas não substitui a estimação local. Se a ação de Bento Gonçalves combinou fiscalização, busca ativa e encaminhamento a vagas, a queda de beneficiários deveria vir acompanhada de melhora agregada no emprego formal. Estimo esse padrão com controle sintético usando municípios da região Sul. Os desfechos principais são famílias beneficiárias e estoque de vínculos formais. O segundo não liga famílias a postos de trabalho, mas ajuda a distinguir inclusão produtiva de revisão administrativa.
 
+\begin{{table*}}[t]
+\centering
+\caption{{Estimativas de controle sintético para Bolsa Família e emprego formal}}
+\label{{tab:results}}
+\input{{tables/tab_results.tex}}
+\end{{table*}}
+
 \section{{Estratégia empírica}}
 
 A estratégia segue o controle sintético de \citet{{abadie2010synthetic}}. A ideia é comparar o município tratado com uma média ponderada de municípios não tratados que reproduza sua trajetória antes da intervenção. O efeito mensal é $\alpha_{{1t}}=Y_{{1t}}-Y^N_{{1t}}$, em que $Y^N_{{1t}}$ é aproximado por $\widehat{{Y}}^N_{{1t}}=\sum_jw_jY_{{jt}}$, com $w_j\geq0$ e $\sum_jw_j=1$. Os pesos minimizam a distância pré-tratamento usando apenas informação anterior à intervenção.
@@ -1806,13 +1813,6 @@ Antes de rodar o controle sintético, fixo a amostra de comparação. Para cada 
 A escolha de preditores segue a cautela de \citet{{ferman2020cherrypicking}}, que mostram como lags e covariáveis escolhidos após inspeção dos resultados podem abrir espaço para busca de especificações em controle sintético. Por isso, trato a etapa de seleção como desenho prévio e uso uma grade fixa de lags. Dentro do pool, ordeno até 80 municípios por preditores de pré-tratamento, comparo distância de matching e RMSPE direto, e testo 12, 15, 20 e 25 doadores. Retenho a combinação de menor RMSPE pré. Os dois desfechos usam os lags $t-1$ a $t-12$, $t-15$ e $t-18$, além de log população e log PIB. Nenhuma observação posterior a outubro de 2024 entra nessa seleção.
 
 O tratamento operacional é novembro de 2024, mês usado pela Prefeitura como referência inicial da redução de famílias beneficiárias \citep{{prefeiturabento2025bolsafamilia}}. Os placebos reestimam cada doador retido como tratado e mantêm no gráfico os casos com MSPE pré até cinco vezes o de Bento Gonçalves. O $p_{{FP}}$ vem da rotina SCM.CS de \citet{{firpo2018synthetic}}. As bandas mostram seus conjuntos de confiança de 90\%. As figuras usam média móvel de 3 meses. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
-
-\begin{{table*}}[t]
-\centering
-\caption{{Estimativas de controle sintético para Bolsa Família e emprego formal}}
-\label{{tab:results}}
-\input{{tables/tab_results.tex}}
-\end{{table*}}
 
 \FloatBarrier
 \vspace{{3pt}}

@@ -1621,7 +1621,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
     rais_2024 = rais[rais["ano"] == 2024].iloc[0]
 
     def preamble(title: str) -> str:
-        return rf"""\documentclass[10pt,twocolumn]{{article}}
+        return rf"""\documentclass[10pt]{{article}}
 
 \usepackage[letterpaper,margin=0.56in]{{geometry}}
 \usepackage{{amsmath,amssymb,graphicx,booktabs,threeparttable,natbib,float,subcaption,placeins,titlesec}}
@@ -1656,7 +1656,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \renewcommand{{\figurename}}{{Figura}}
 \newcommand{{\tabnotes}}[1]{{\par\vspace{{2pt}}\noindent\begin{{minipage}}{{\linewidth}}\scriptsize #1\end{{minipage}}}}
 \title{{\vspace{{-1.35cm}}\textbf{{{title}}}}}
-\author{{Victor Rangel\textsuperscript{{*}}\\[-1pt]{{\normalsize Insper}}}}
+\author{{Victor Rangel\\[-1pt]{{\normalsize Insper}}\\[-1pt]{{\normalsize \href{{https://orcid.org/0000-0002-4520-2795}}{{https://orcid.org/0000-0002-4520-2795}}}}\\[-1pt]{{\normalsize \href{{mailto:victorrsr@al.insper.edu.br}}{{victorrsr@al.insper.edu.br}}}}}}
 \date{{}}
 """
 
@@ -1740,7 +1740,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
             if composition_note
             else ""
         )
-        return rf"""\begin{{figure*}}[t]
+        return rf"""\begin{{figure}}[t]
 \centering
 \makebox[\textwidth][c]{{%
 \begin{{minipage}}{{0.995\textwidth}}
@@ -1751,7 +1751,7 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \caption{{Controle sintético, pool {pool_label}. Painéis à esquerda reportam famílias beneficiárias. Painéis à direita reportam estoque de vínculos formais. Séries em média móvel de 3 meses. {effects_sentence}{extra}}}
 \label{{fig:{label_prefix}-att}}
 {composition_block}
-\end{{figure*}}
+\end{{figure}}
 """
 
     main_figures = panel_wall_figure(
@@ -1772,7 +1772,6 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
         preamble("Nota de Política Pública: saídas do Bolsa Família e emprego formal no município de Bento Gonçalves")
         + rf"""
 \begin{{document}}
-\twocolumn[
 \maketitle
 \vspace{{-0.55cm}}
 \begin{{abstract}}
@@ -1781,11 +1780,6 @@ def write_main_tex(summary: pd.DataFrame, results: dict) -> None:
 \vspace{{0.05cm}}
 \noindent{{\footnotesize \textbf{{Palavras-chave:}} Bolsa Família; controle sintético; política municipal; emprego formal. \textbf{{JEL:}} I38; J68; C23; H53.}}
 \vspace{{0.25cm}}
-]
-\begingroup
-\renewcommand{{\thefootnote}}{{*}}
-\footnotetext{{E-mail: \href{{mailto:victorrsr@al.insper.edu.br}}{{victorrsr@al.insper.edu.br}}. ORCID: \href{{https://orcid.org/0000-0002-4520-2795}}{{https://orcid.org/0000-0002-4520-2795}}.}}
-\endgroup
 
 \section{{Introdução}}
 
@@ -1797,13 +1791,6 @@ A literatura de transferências condicionadas dá conteúdo a essa segunda marge
 
 Essa literatura orienta o teste, mas não substitui a estimação local. Se a ação de Bento Gonçalves combinou fiscalização, busca ativa e encaminhamento a vagas, a queda de beneficiários deveria vir acompanhada de melhora agregada no emprego formal. Estimo esse padrão com controle sintético usando municípios da região Sul. Os desfechos principais são famílias beneficiárias e estoque de vínculos formais. O segundo não liga famílias a postos de trabalho, mas ajuda a distinguir inclusão produtiva de revisão administrativa.
 
-\begin{{table*}}[t]
-\centering
-\caption{{Estimativas de controle sintético para Bolsa Família e emprego formal}}
-\label{{tab:results}}
-\input{{tables/tab_results.tex}}
-\end{{table*}}
-
 \section{{Estratégia empírica}}
 
 A estratégia segue o controle sintético de \citet{{abadie2010synthetic}}. A ideia é comparar o município tratado com uma média ponderada de municípios não tratados que reproduza sua trajetória antes da intervenção. O efeito mensal é $\alpha_{{1t}}=Y_{{1t}}-Y^N_{{1t}}$, em que $Y^N_{{1t}}$ é aproximado por $\widehat{{Y}}^N_{{1t}}=\sum_jw_jY_{{jt}}$, com $w_j\geq0$ e $\sum_jw_j=1$. Os pesos minimizam a distância pré-tratamento usando apenas informação anterior à intervenção.
@@ -1813,6 +1800,13 @@ Antes de rodar o controle sintético, fixo a amostra de comparação. Para cada 
 A escolha de preditores segue a cautela de \citet{{ferman2020cherrypicking}}, que mostram como lags e covariáveis escolhidos após inspeção dos resultados podem abrir espaço para busca de especificações em controle sintético. Por isso, trato a etapa de seleção como desenho prévio e uso uma grade fixa de lags. Dentro do pool, ordeno até 80 municípios por preditores de pré-tratamento, comparo distância de matching e RMSPE direto, e testo 12, 15, 20 e 25 doadores. Retenho a combinação de menor RMSPE pré. Os dois desfechos usam os lags $t-1$ a $t-12$, $t-15$ e $t-18$, além de log população e log PIB. Nenhuma observação posterior a outubro de 2024 entra nessa seleção.
 
 O tratamento operacional é novembro de 2024, mês usado pela Prefeitura como referência inicial da redução de famílias beneficiárias \citep{{prefeiturabento2025bolsafamilia}}. Os placebos reestimam cada doador retido como tratado e mantêm no gráfico os casos com MSPE pré até cinco vezes o de Bento Gonçalves. O $p_{{FP}}$ vem da rotina SCM.CS de \citet{{firpo2018synthetic}}. As bandas mostram seus conjuntos de confiança de 90\%. As figuras usam média móvel de 3 meses. Os dados combinam MDS/VISDATA, Novo CAGED e covariáveis municipais da Base dos Dados.
+
+\begin{{table}}[t]
+\centering
+\caption{{Estimativas de controle sintético para Bolsa Família e emprego formal}}
+\label{{tab:results}}
+\input{{tables/tab_results.tex}}
+\end{{table}}
 
 \FloatBarrier
 \vspace{{3pt}}
@@ -1844,7 +1838,6 @@ Se o mecanismo for confirmado, a experiência oferece uma hipótese concreta de 
 \bibliography{{references}}
 
 \clearpage
-\onecolumn
 \small
 \appendix
 \section*{{Apêndice A. Informações de submissão}}
